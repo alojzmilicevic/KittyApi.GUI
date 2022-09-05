@@ -1,12 +1,15 @@
 import axios, { AxiosResponse } from "axios";
-import { UserModel } from "../user/UserModel";
+import { UserModel } from "../streamer-app/user/UserModel";
 
-const url = 'https://localhost:7075/api'
+const firstUrl = 'https://localhost:7076'
+const secondUrl = 'http://192.168.50.115:80'
+const url = `${firstUrl || process.env.REACT_APP_SERVER_URL}/api`;
 
 const userDataAxios = axios.create();
 
 userDataAxios.interceptors.request.use(req => {
     const token = localStorage.getItem('token');
+
     const controller = new AbortController();
     if (!token) {
         controller.abort();

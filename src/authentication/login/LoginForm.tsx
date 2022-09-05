@@ -7,7 +7,7 @@ import Checkbox from '@mui/material/Checkbox';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { Container } from "@mui/material";
-import CatIcon from '../../resources/img/svgtobe.svg';
+import CatIcon from '../../assets/img/svgtobe.svg';
 import { Controller } from "react-hook-form";
 import { ILoginProps, useLogin } from "./useLogin";
 

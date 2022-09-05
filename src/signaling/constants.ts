@@ -1,0 +1,26 @@
+export enum MessageTypes {
+    INCOMING_CALL = 'incomingCall',
+    CALL = 'call',
+    ANSWER = 'answer',
+    HANGUP = 'hangup',
+    ICE_CANDIDATE = 'iceCandidate',
+    OFFER = 'offer',
+}
+
+export enum ClientType {
+    VIEWER = 'viewer',
+    STREAMER = 'streamer',
+}
+
+type PayloadType = {} | RTCSessionDescriptionInit;
+
+export interface Message {
+    type: MessageTypes,
+    payload: PayloadType
+}
+
+export enum SignalRMessageTypes {
+    SEND_MESSAGE_TO_STREAMER = "SendMessageToStreamer",
+    SEND_MESSAGE_TO_VIEWER = "SendMessageToViewer",
+    SEND_MESSAGE_TO_ALL_VIEWERS = "SendMessageToAllViewers"
+}

@@ -2,7 +2,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { getUserData, login } from "../authentication";
 import { useNavigate } from "react-router-dom";
 import * as React from "react";
-import { UserModel } from "../../user/UserModel";
+import { UserModel } from "../../streamer-app/user/UserModel";
 
 interface IFormInput {
     email: string;

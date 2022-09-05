@@ -1,8 +1,8 @@
 import Box from "@mui/material/Box";
 import { AppBar, Button, IconButton, Toolbar, Typography } from "@mui/material";
-import MenuIcon from '@mui/icons-material/Menu';
 import { NavLink } from "react-router-dom";
-import { UserModel } from "../user/UserModel";
+import { UserModel } from "../../streamer-app/user/UserModel";
+import cat from '../../assets/img/svgtobe.svg';
 
 interface Props {
     user: UserModel | null,
@@ -10,27 +10,22 @@ interface Props {
 }
 
 const Navigation = ({ user, logout }: Props) => {
-    return <Box sx={{ flexGrow: 1 }}>
+    return <Box>
         <AppBar position="static">
             <Toolbar>
-                <IconButton
-                    size="large"
-                    edge="start"
-                    color="inherit"
-                    aria-label="menu"
-                    sx={{ mr: 2 }}
-                >
-                    <MenuIcon/>
+                <IconButton disableRipple size={"small"}>
+                    <img style={{width: 40, height: 40}} alt="a" src={cat}></img>
                 </IconButton>
                 <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                    News
+                    KittyIO
                 </Typography>
-                {user?.role === "Administrator" && <Button color="inherit" component={NavLink} to={"/admin"}>
-                  Admin
+                {user?.role === "Administrator" && <Button color="inherit" component={NavLink} to={"/streamer"}>
+                  Streamer
                 </Button>}
-                {user && <Button color="inherit" component={NavLink} to={"/client"}>
-                  Client
-                </Button>}
+                {user && <Button color="inherit" component={NavLink} to={"/viewer"}>
+                  View
+                </Button>
+                }
                 <Button color="inherit" component={NavLink} to={"/login"} onClick={logout}>
                     {user ? "Logout" : "Login"}
                 </Button>

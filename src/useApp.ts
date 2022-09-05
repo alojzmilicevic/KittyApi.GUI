@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import { UserModel } from "./user/UserModel";
+import { UserModel } from "./streamer-app/user/UserModel";
 import { getUserData } from "./authentication/authentication";
 
 export function useApp() {
     const [user, setUser] = useState<UserModel | null>(null);
-    const [loading, setLoading] = useState(true);
+    const [ready, setReady] = useState(false);
 
     const logout = useCallback(() => {
         setUser(null);
@@ -20,7 +20,7 @@ export function useApp() {
             }).catch(error => {
             logout();
         }).finally(() => {
-            setLoading(false);
+            setReady(true);
         })
     }, [logout])
 
@@ -28,5 +28,5 @@ export function useApp() {
         fetchUser();
     }, [fetchUser]);
 
-    return { user, loading, setUser, logout };
+    return { user, ready, setUser, logout };
 }
