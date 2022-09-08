@@ -4,7 +4,7 @@ import { cleanup } from "./store/store";
 import { init } from "./store/viewerMiddleware";
 import { styled } from "@mui/material";
 import { ConnectMenu } from './ConnectMenu';
-import { CallStatus, getCallStatus } from "../store/app";
+import { ConnectionStatus, getConnectionStatus } from "../store/app";
 
 const Container = styled('div')({
     flexGrow: 1,
@@ -16,7 +16,7 @@ const Container = styled('div')({
 
 const App = () => {
     const dispatch = useAppDispatch();
-    const callStatus = useAppSelector(getCallStatus);
+    const connectionStatus = useAppSelector(getConnectionStatus);
 
     useEffect(() => {
         dispatch(init());
@@ -28,7 +28,7 @@ const App = () => {
 
 
     return <Container>
-        <video id="viewer-video" style={{visibility: callStatus === CallStatus.CONNECTED ? 'visible' : 'hidden'}} autoPlay></video>
+        <video id="viewer-video" style={{visibility: connectionStatus === ConnectionStatus.CONNECTED ? 'visible' : 'hidden'}} autoPlay></video>
 
         <ConnectMenu />
     </Container>

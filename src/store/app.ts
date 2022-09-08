@@ -1,24 +1,52 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { RootState } from "./store";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from './store';
+import { UserModel } from '../streamer-app/user/UserModel';
 
-export enum CallStatus {
+export type StreamInfo = {
+    streamId: number,
+    streamTitle: string,
+    isActive: boolean,
+    users: UserModel[],
+}
+
+export enum ConnectionStatus {
     IDLE,
     CONNECTING,
     CONNECTED
 }
+
+type State = {
+    connectionStatus: ConnectionStatus,
+    user?: UserModel,
+    streamInfo?: StreamInfo,
+};
+
+const initialState: State = {
+    connectionStatus: ConnectionStatus.IDLE,
+    user: undefined,
+    streamInfo: undefined
+};
+
 export const app = createSlice({
     name: 'app',
-    initialState: {
-        callStatus: CallStatus.IDLE,
-    },
+    initialState,
     reducers: {
-        setCallStatus: (state, { payload }: PayloadAction<{ callStatus: CallStatus }>) => {
-            state.callStatus = payload.callStatus;
+        setConnectionStatus: (state, { payload }: PayloadAction<{ connectionStatus: ConnectionStatus }>) => {
+            state.connectionStatus = payload.connectionStatus;
         },
-    },
-})
-export const getCallStatus = (state: RootState) => state.app.callStatus;
+        setUserInfo: (state: State, { payload }: PayloadAction<UserModel | undefined>) => {
+            state.user = payload;
+        },
+        setStreamInfo: (state, action: PayloadAction<StreamInfo>) => {
+            state.streamInfo = { ...action.payload };
+        }
+    }
+});
+
+export const getUser = (state: RootState) => state.app.user;
+export const getStreamInfo = (state: RootState) => state.app.streamInfo;
+export const getConnectionStatus = (state: RootState) => state.app.connectionStatus;
 
 
 // Action creators are generated for each case reducer function
-export const { setCallStatus } = app.actions
+export const { setConnectionStatus, setUserInfo, setStreamInfo } = app.actions;

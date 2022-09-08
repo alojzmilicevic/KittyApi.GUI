@@ -4,7 +4,8 @@ import { AppDispatch } from "../../store/store";
 import { SignalingChannel } from "../../signaling/SignalingChannel";
 import { IceServerConfig } from "../../peerConnection/constants";
 import { onIceConnectionStateChange } from "../../peerConnection/util";
-import { CallStatus, setCallStatus } from "../../store/app";
+import { ConnectionStatus, setConnectionStatus, setStreamInfo } from '../../store/app';
+import * as StreamApi from "../api/stream";
 
 export class ViewerPeerConnection {
     peer: { from: string, pc: RTCPeerConnection } | null = null;
@@ -24,8 +25,10 @@ export class ViewerPeerConnection {
         this.setLocalVideo(null);
         this.peer.pc.close();
         this.peer = null;
-        await this.signaler.sendMessageToStreamer({ type: MessageTypes.HANGUP, payload: {} });
-        this.dispatch(setCallStatus({callStatus: CallStatus.IDLE}));
+        const streamInfo = await StreamApi.leaveStream(this.signaler.getConnectionId()!);
+        //await this.signaler.sendMessageToStreamer({ type: MessageTypes.HANGUP, payload: {} });
+        this.dispatch(setConnectionStatus({connectionStatus: ConnectionStatus.IDLE}));
+        this.dispatch(setStreamInfo(streamInfo));
     };
 
     setLocalVideo = (stream: MediaStream | null) => {
@@ -37,7 +40,7 @@ export class ViewerPeerConnection {
 
     async connectToStream() {
         if (this.peer) return;
-        this.dispatch(setCallStatus({ callStatus: CallStatus.CONNECTING }));
+        this.dispatch(setConnectionStatus({ connectionStatus: ConnectionStatus.CONNECTING }));
 
         const pc = new RTCPeerConnection(IceServerConfig);
         this.peer = { from: this.signaler.getConnectionId()!, pc };
@@ -50,12 +53,14 @@ export class ViewerPeerConnection {
                     break;
 
                 case "connected":
-                    this.dispatch(setCallStatus({ callStatus: CallStatus.CONNECTED }));
+                    this.dispatch(setConnectionStatus({ connectionStatus: ConnectionStatus.CONNECTED }));
                     break;
             }
         }
         pc.ontrack = (ev: RTCTrackEvent) => this.setLocalVideo(ev.streams[0]);
-        await this.signaler.sendMessageToStreamer({ type: MessageTypes.INCOMING_CALL, payload: {} })
+
+        await StreamApi.joinStream(this.signaler.getConnectionId()!);
+        //await this.signaler.sendMessageToStreamer({ type: MessageTypes.INCOMING_CALL, payload: {} })
     }
 
     async handleOffer(message: any) {

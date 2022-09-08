@@ -1,32 +1,35 @@
 import { useCallback, useEffect, useState } from "react";
 import { UserModel } from "./streamer-app/user/UserModel";
 import { getUserData } from "./authentication/authentication";
+import { useAppDispatch, useAppSelector } from './store/hooks';
+import { getUser, setUserInfo } from './store/app';
 
 export function useApp() {
-    const [user, setUser] = useState<UserModel | null>(null);
     const [ready, setReady] = useState(false);
+    const dispatch = useAppDispatch();
+    const user = useAppSelector(getUser);
 
     const logout = useCallback(() => {
-        setUser(null);
+        dispatch(setUserInfo(undefined));
         localStorage.removeItem('token');
-    }, [])
+    }, [dispatch])
 
     const fetchUser = useCallback(() => {
         getUserData()
-            .then((userData) => {
+            .then((userData: UserModel) => {
                 if (userData) {
-                    setUser(userData);
+                    dispatch(setUserInfo(userData));
                 }
             }).catch(error => {
             logout();
         }).finally(() => {
             setReady(true);
         })
-    }, [logout])
+    }, [dispatch, logout])
 
     useEffect(() => {
         fetchUser();
     }, [fetchUser]);
 
-    return { user, ready, setUser, logout };
+    return { user, ready, logout };
 }

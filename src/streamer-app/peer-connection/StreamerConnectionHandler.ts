@@ -43,8 +43,7 @@ export default class StreamerConnectionHandler {
     }
 
     onSocketMessage = async (user: string, message: Message) => {
-        console.log(`got ${message.type.toUpperCase()} from ${user}`)
-
+        //console.log(`got ${message.type} from ${user}`)
         switch (message.type) {
             case MessageTypes.INCOMING_CALL:
                 await this.streamerPeerConnection.onIncomingCall(user, this.stream!);

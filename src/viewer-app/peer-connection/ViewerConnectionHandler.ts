@@ -3,6 +3,8 @@ import { AppDispatch } from "../../store/store";
 import { SignalingChannel } from "../../signaling/SignalingChannel";
 import { ClientType, Message, MessageTypes } from "../../signaling/constants";
 import { ViewerPeerConnection } from "./ViewerPeerConnection";
+import { getStreamInfo } from "../api/stream";
+import { setStreamInfo } from '../../store/app';
 
 export default class ViewerConnectionHandler {
     store: EnhancedStore;
@@ -16,6 +18,13 @@ export default class ViewerConnectionHandler {
         this.dispatch = store.dispatch;
         this.signaling = new SignalingChannel(this.onSocketMessage, ClientType.VIEWER);
         this.viewerPeerConnection = new ViewerPeerConnection(store, this.dispatch, this.signaling);
+
+        this.init();
+    }
+
+    async init() {
+        const streamInfo = await getStreamInfo(1);
+        this.dispatch(setStreamInfo(streamInfo));
     }
 
     async cleanUpConnection() {
@@ -32,7 +41,7 @@ export default class ViewerConnectionHandler {
     }
 
     onSocketMessage = async (user: string, message: Message) => {
-        //console.log(`got ${message.type.toUpperCase()} from ${user}`)
+        //console.log(`got ${message.type} from ${user}`)
         switch (message.type) {
             case MessageTypes.CALL:
                 await this.connectToStream();

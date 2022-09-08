@@ -2,8 +2,7 @@ import axios, { AxiosResponse } from "axios";
 import { UserModel } from "../streamer-app/user/UserModel";
 
 const firstUrl = 'https://localhost:7076'
-const secondUrl = 'http://192.168.50.115:80'
-const url = `${firstUrl || process.env.REACT_APP_SERVER_URL}/api`;
+export const appUrl = `${firstUrl || process.env.REACT_APP_SERVER_URL}/api`;
 
 const userDataAxios = axios.create();
 
@@ -20,7 +19,7 @@ userDataAxios.interceptors.request.use(req => {
 })
 
 export const login = async (email: string | null, password: string | null) => {
-    const response = await axios.post<string>(`${url}/auth/login`, { userName: email, password });
+    const response = await axios.post<string>(`${appUrl}/auth/login`, { userName: email, password });
 
     return response.data;
 }
@@ -28,7 +27,7 @@ export const login = async (email: string | null, password: string | null) => {
 export const getUserData: () => (Promise<UserModel>) = () => {
     const token = localStorage.getItem('token');
 
-    return userDataAxios.get<UserModel>(`${url}/user`, {
+    return userDataAxios.get<UserModel>(`${appUrl}/user`, {
         headers: {
             Authorization: "Bearer " + token,
         },

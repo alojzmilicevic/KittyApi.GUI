@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
 export const viewer = createSlice({
     name: 'viewer',
@@ -12,6 +12,7 @@ export const viewer = createSlice({
         },
     },
 })
+
 
 // Action creators are generated for each case reducer function
 export const { cleanup, connectToStream, leaveStream } = viewer.actions

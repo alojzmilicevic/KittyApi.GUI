@@ -1,0 +1,32 @@
+import axios, { AxiosError } from 'axios';
+import { appUrl } from '../../authentication/authentication';
+
+const streamUrl = `${appUrl}/stream`;
+
+const streamAxios = axios.create();
+
+streamAxios.interceptors.request.use(req => {
+    const token = localStorage.getItem('token');
+
+    const controller = new AbortController();
+    if (!token) {
+        controller.abort();
+    }
+    return { ...req, signal: controller.signal, headers: { ...req.headers, Authorization: `Bearer ${token}` } };
+}, (error) => {
+    return Promise.reject(error);
+});
+
+export const joinStream = async (user: string) =>
+    streamAxios.post<string>(`${streamUrl}/join-stream`, { streamId: 1, connectionId: user })
+        .then(res => res.data)
+        .catch((e: AxiosError) => {
+            //console.log(e.response);
+        });
+
+export const getStreamInfo = async (streamId: number) =>
+    await streamAxios.get(`${streamUrl}/stream-info/${streamId}`).then(res => res.data);
+
+export const leaveStream = (user: string) =>
+    streamAxios.post(`${streamUrl}/leave-stream`, { streamId: 1, connectionId: user })
+        .then(res => res.data);

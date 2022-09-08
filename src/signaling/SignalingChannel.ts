@@ -13,10 +13,11 @@ class SignalingChannel {
     }
 
     async init(onMessage: any, clientType: string) {
+        const token = localStorage.getItem('token');
         this.connection = new HubConnectionBuilder()
-            .withUrl(`${process.env.REACT_APP_SERVER_URL}/chatHub?clientType=${clientType}`, {
+            .withUrl(`${process.env.REACT_APP_SERVER_URL}/chatHub?clientType=${clientType}&token=${token}`, {
                 logger: LogLevel.Error,
-                transport: HttpTransportType.WebSockets
+                transport: HttpTransportType.WebSockets,
             })
             .withAutomaticReconnect()
             .build();
