@@ -3,6 +3,6 @@ export interface UserModel {
     firstName: string,
     lastName: string,
     role: string,
-    userName: string,
+    username: string,
     userId: string,
 }

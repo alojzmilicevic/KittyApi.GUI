@@ -17,8 +17,8 @@ streamAxios.interceptors.request.use(req => {
     return Promise.reject(error);
 });
 
-export const joinStream = async (user: string) =>
-    streamAxios.post<string>(`${streamUrl}/join-stream`, { streamId: 1, connectionId: user })
+export const joinStream = async () =>
+    streamAxios.post<string>(`${streamUrl}/join-stream`, {streamId: 1})
         .then(res => res.data)
         .catch((e: AxiosError) => {
             //console.log(e.response);
@@ -27,6 +27,6 @@ export const joinStream = async (user: string) =>
 export const getStreamInfo = async (streamId: number) =>
     await streamAxios.get(`${streamUrl}/stream-info/${streamId}`).then(res => res.data);
 
-export const leaveStream = (user: string) =>
-    streamAxios.post(`${streamUrl}/leave-stream`, { streamId: 1, connectionId: user })
+export const leaveStream = () =>
+    streamAxios.post(`${streamUrl}/leave-stream`, { streamId: 1 })
         .then(res => res.data);

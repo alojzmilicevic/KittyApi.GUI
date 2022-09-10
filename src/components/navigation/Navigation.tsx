@@ -24,50 +24,53 @@ const SkeletonContainer = () => {
         <Grid>
             <Skeleton animation='wave' variant='circular' width={40} height={40} />
         </Grid>
-    </Grid>
-}
+    </Grid>;
+};
 
 const Navigation = ({ user, logout, loading }: Props) => {
     return (
         <Box>
             <AppBar position='static'>
-                <Toolbar>
-                    <IconButton component={NavLink} to={'/'} disableRipple size={'small'}>
-                        <CatIcon color={grey[500]} size={40} />
-                    </IconButton>
-                    <Typography
-                        variant='h6'
-                        component={NavLink}
-                        to={'/'}
-                        sx={{ flexGrow: 1, textDecoration: 'none', color: 'primary.contrastText' }}
-                    >
-                        KittyIO
-                    </Typography>
-                    {user &&
-                        <Tooltip title={'Stream'}>
-                            <IconButton sx={{ color: grey[200] }} component={NavLink} to={'/streamer'}>
-                                <VideocamIcon fontSize={'large'} />
-                            </IconButton>
-                        </Tooltip>
-                    }
-
-                    {!user && !loading &&
-                        <Button
-                            size={'large'}
-                            color='inherit'
+                <Toolbar style={{display: 'flex', justifyContent: 'space-between'}}>
+                    <div style={{display: 'flex', alignItems: 'center'}}>
+                        <IconButton component={NavLink} to={'/'} disableRipple size={'small'}>
+                            <CatIcon color={grey[500]} size={40} />
+                        </IconButton>
+                        <Typography
+                            variant='h6'
                             component={NavLink}
-                            to={'/login'}
-                            onClick={logout}
-                            variant={'outlined'}
-                            startIcon={<AccountCircleIcon sx={{ width: 24, height: 24 }} />}
+                            to={'/'}
+                            sx={{ textDecoration: 'none', color: 'primary.contrastText' }}
                         >
-                            {'Login'}
-                        </Button>
-                    }
-                    {user && <AppMenu logout={logout} />}
+                            KittyIO
+                        </Typography>
+                    </div>
+                    <div style={{display: 'flex', alignItems: 'center'}}>
+                        {user &&
+                            <Tooltip title={'Stream'}>
+                                <IconButton sx={{ color: grey[200] }} component={NavLink} to={'/streamer'}>
+                                    <VideocamIcon fontSize={'large'} />
+                                </IconButton>
+                            </Tooltip>
+                        }
 
-                    {!user && loading && <SkeletonContainer />}
+                        {!user && !loading &&
+                            <Button
+                                size={'large'}
+                                color='inherit'
+                                component={NavLink}
+                                to={'/login'}
+                                onClick={logout}
+                                variant={'outlined'}
+                                startIcon={<AccountCircleIcon sx={{ width: 24, height: 24 }} />}
+                            >
+                                {'Login'}
+                            </Button>
+                        }
+                        {user && <AppMenu logout={logout} />}
 
+                        {!user && loading && <SkeletonContainer />}
+                    </div>
                 </Toolbar>
             </AppBar>
         </Box>

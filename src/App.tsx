@@ -54,7 +54,6 @@ function App() {
                         element={user ? <ViewerApp /> : <Navigate to={'/login'} replace />}
                     />
                 </Routes>
-
             }
         </MainContainer>
     </ThemeProvider>;

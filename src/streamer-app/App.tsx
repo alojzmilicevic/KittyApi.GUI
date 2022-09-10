@@ -1,11 +1,14 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { cleanup, init } from './store/streamerMiddleware';
-import { getUsers } from './user/store/store';
+import { getStreamInfo } from '../store/app';
+import { UserModel } from './user/UserModel';
+import Typography from '@mui/material/Typography';
 
 const App = () => {
     const dispatch = useAppDispatch();
-    const users = useAppSelector(getUsers);
+    const streamInfo = useAppSelector(getStreamInfo);
+    const { users } = streamInfo || {};
 
     useEffect(() => {
         dispatch(init());
@@ -16,11 +19,17 @@ const App = () => {
     }, [dispatch]);
 
 
-    return <div style={{ display: 'flex', flexDirection: 'column' }}>
+    return <>
         <video id='streamer-video' autoPlay></video>
-        <p>Users</p>
-        {users.map((u: string, index: number) => <p key={`${index}${u}`}>{u}</p>)}
-    </div>;
+        {users && users.map((user: UserModel, idx: number) =>
+            <Typography
+                key={`${idx} ${user.firstName}`}
+                variant={'body1'}
+            >
+                {`${user.firstName} ${user.lastName}`}
+            </Typography>
+        )}
+    </>;
 };
 
 export { App };

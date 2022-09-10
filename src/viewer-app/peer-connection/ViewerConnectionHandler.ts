@@ -10,13 +10,13 @@ export default class ViewerConnectionHandler {
     store: EnhancedStore;
     dispatch: AppDispatch;
     stream: MediaStream | null = null;
-    signaling: SignalingChannel;
+    signaling: SignalingChannel | null;
     viewerPeerConnection: ViewerPeerConnection;
 
     constructor(store: EnhancedStore) {
         this.store = store;
         this.dispatch = store.dispatch;
-        this.signaling = new SignalingChannel(this.onSocketMessage, ClientType.VIEWER);
+        this.signaling = new SignalingChannel(this.onSocketMessage, ClientType.VIEWER, false);
         this.viewerPeerConnection = new ViewerPeerConnection(store, this.dispatch, this.signaling);
 
         this.init();
@@ -29,19 +29,20 @@ export default class ViewerConnectionHandler {
 
     async cleanUpConnection() {
         await this.leaveStream();
-        await this.signaling.cleanUpConnection();
     }
 
     async connectToStream() {
+        this.signaling && await this.signaling.init();
         await this.viewerPeerConnection.connectToStream();
     }
 
     async leaveStream() {
+        await this.signaling?.cleanUpConnection();
         await this.viewerPeerConnection.leaveStream();
     }
 
     onSocketMessage = async (user: string, message: Message) => {
-        //console.log(`got ${message.type} from ${user}`)
+        console.log(`got ${message.type} from ${user}`)
         switch (message.type) {
             case MessageTypes.CALL:
                 await this.connectToStream();

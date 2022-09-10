@@ -4,7 +4,7 @@ import { AppDispatch } from "../../store/store";
 import { SignalingChannel } from "../../signaling/SignalingChannel";
 import { IceServerConfig } from "../../peerConnection/constants";
 import { onIceConnectionStateChange } from "../../peerConnection/util";
-import { ConnectionStatus, setConnectionStatus, setStreamInfo } from '../../store/app';
+import { ConnectionStatus, getUser, setConnectionStatus, setStreamInfo } from '../../store/app';
 import * as StreamApi from "../api/stream";
 
 export class ViewerPeerConnection {
@@ -25,8 +25,7 @@ export class ViewerPeerConnection {
         this.setLocalVideo(null);
         this.peer.pc.close();
         this.peer = null;
-        const streamInfo = await StreamApi.leaveStream(this.signaler.getConnectionId()!);
-        //await this.signaler.sendMessageToStreamer({ type: MessageTypes.HANGUP, payload: {} });
+        const streamInfo = await StreamApi.leaveStream();
         this.dispatch(setConnectionStatus({connectionStatus: ConnectionStatus.IDLE}));
         this.dispatch(setStreamInfo(streamInfo));
     };
@@ -43,7 +42,8 @@ export class ViewerPeerConnection {
         this.dispatch(setConnectionStatus({ connectionStatus: ConnectionStatus.CONNECTING }));
 
         const pc = new RTCPeerConnection(IceServerConfig);
-        this.peer = { from: this.signaler.getConnectionId()!, pc };
+        const user = getUser(this.store.getState())!;
+        this.peer = { from: user.username, pc };
 
         onIceConnectionStateChange(() => this.leaveStream(), pc);
 
@@ -59,8 +59,7 @@ export class ViewerPeerConnection {
         }
         pc.ontrack = (ev: RTCTrackEvent) => this.setLocalVideo(ev.streams[0]);
 
-        await StreamApi.joinStream(this.signaler.getConnectionId()!);
-        //await this.signaler.sendMessageToStreamer({ type: MessageTypes.INCOMING_CALL, payload: {} })
+        await StreamApi.joinStream();
     }
 
     async handleOffer(message: any) {
@@ -72,8 +71,9 @@ export class ViewerPeerConnection {
 
         const answer = await pc.createAnswer();
         await pc.setLocalDescription(answer);
+        const user = getUser(this.store.getState())!;
 
-        await this.signaler.sendMessageToStreamer({ type: MessageTypes.ANSWER, payload: answer });
+        await this.signaler.sendMessageToStreamer({ type: MessageTypes.ANSWER, payload: answer }, user.username);
     }
 
     async onIceCandidate(iceCandidate: any) {

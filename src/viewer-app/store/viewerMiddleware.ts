@@ -1,8 +1,9 @@
 import { createAction } from "@reduxjs/toolkit";
 import ViewerConnectionHandler from "../peer-connection/ViewerConnectionHandler";
-import { cleanup, connectToStream, leaveStream } from "./store";
 
 let client: ViewerConnectionHandler | null = null;
+
+const baseAction = 'viewer';
 
 export const viewerMiddleware = (store: any) => (next: any) => (action: any) => {
     switch (action.type) {
@@ -28,4 +29,7 @@ export const viewerMiddleware = (store: any) => (next: any) => (action: any) => 
     return next(action);
 };
 
-export const init = createAction('viewer/init');
+export const init = createAction(`${baseAction}/init`);
+export const cleanup = createAction(`${baseAction}/cleanup`);
+export const connectToStream = createAction(`${baseAction}/leaveStream`);
+export const leaveStream = createAction(`${baseAction}/connectToStream`);

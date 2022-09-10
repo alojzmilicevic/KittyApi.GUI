@@ -8,10 +8,15 @@ export enum IceConnectionStates {
 
 export const IceServerConfig = { 'iceServers': [{ 'urls': 'stun:stun.l.google.com:19302' }] }
 
-export const MediaConstraints = {
+export const MediaConstraints: MediaStreamConstraints = {
     video: {
-        width: 640,
-        height: 480,
+        width: {
+            min: 640, ideal: 1280, max: 1920,
+        },
+        height: {
+            min: 480, ideal: 720, max: 1080,
+        },
+        aspectRatio: 1.777777778
     },
     audio: false
 }

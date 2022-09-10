@@ -1,10 +1,11 @@
-import { EnhancedStore } from "@reduxjs/toolkit";
-import { AppDispatch } from "../../store/store";
-import { SignalingChannel } from "../../signaling/SignalingChannel";
-import { addUser, removeUser } from "../user/store/store";
-import { MessageTypes } from "../../signaling/constants";
-import { IceServerConfig } from "../../peerConnection/constants";
-import { onIceConnectionStateChange } from "../../peerConnection/util";
+import { EnhancedStore } from '@reduxjs/toolkit';
+import { AppDispatch } from '../../store/store';
+import { SignalingChannel } from '../../signaling/SignalingChannel';
+import { MessageTypes } from '../../signaling/constants';
+import { IceServerConfig } from '../../peerConnection/constants';
+import { onIceConnectionStateChange } from '../../peerConnection/util';
+import { getStreamInfo } from '../../viewer-app/api/stream';
+import { setStreamInfo } from '../../store/app';
 
 export class StreamerPeerConnection {
     pcs: { from: string, pc: RTCPeerConnection } [] = [];
@@ -18,11 +19,12 @@ export class StreamerPeerConnection {
         this.signaler = signaler;
     }
 
-    onUserLeftStream(user: string) {
+    async onUserLeftStream(user: string) {
         const actualConn = this.pcs.find(x => x.from === user);
         actualConn?.pc.close();
         this.pcs = this.pcs.filter(x => x.from !== user);
-        this.dispatch(removeUser({ userId: user }));
+        const streamInfo = await getStreamInfo(1);
+        this.dispatch(setStreamInfo(streamInfo));
     }
 
     async onIncomingCall(user: string, mediaStream: MediaStream) {
@@ -39,14 +41,17 @@ export class StreamerPeerConnection {
 
         onIceConnectionStateChange(() => this.onUserLeftStream(user), pc);
 
-        mediaStream.getTracks().forEach(track => pc?.addTrack(track, mediaStream));
+        mediaStream.getTracks().forEach(track => {
+            track.applyConstraints({ width: 1280, height: 720, aspectRatio: 1.777777778 });
+            return pc?.addTrack(track, mediaStream);
+        });
 
         const offer = await pc.createOffer();
         await pc.setLocalDescription(offer);
         await this.signaler.sendMessageToViewer(offer, user);
-
         this.pcs.push({ pc, from: user });
-        this.dispatch(addUser({ userId: user }))
+        const streamInfo = await getStreamInfo(1);
+        this.dispatch(setStreamInfo(streamInfo));
     }
 
     async onAnswer(user: string, sdp: RTCSessionDescriptionInit) {

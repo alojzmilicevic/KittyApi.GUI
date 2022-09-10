@@ -6,7 +6,9 @@ let client: StreamerConnectionHandler | null = null;
 export const streamerMiddleware = (store: any) => (next: any) => (action: any) => {
     switch (action.type) {
         case init.type:
-            client = new StreamerConnectionHandler(store);
+            if (!client) {
+                client = new StreamerConnectionHandler(store);
+            }
             break;
 
         case cleanup.type:

@@ -21,6 +21,5 @@ export interface Message {
 
 export enum SignalRMessageTypes {
     SEND_MESSAGE_TO_STREAMER = "SendMessageToStreamer",
-    SEND_MESSAGE_TO_VIEWER = "SendMessageToViewer",
-    SEND_MESSAGE_TO_ALL_VIEWERS = "SendMessageToAllViewers"
+    SEND_MESSAGE_TO_VIEWER_BASED_ON_USER_NAME = "SendMessageToViewerBasedOnUserName",
 }

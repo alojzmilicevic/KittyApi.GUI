@@ -1,10 +1,10 @@
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { connectToStream, leaveStream } from './store/store';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { ConnectionStatus, getConnectionStatus, getStreamInfo } from '../store/app';
 import { UserModel } from '../streamer-app/user/UserModel';
 import Grid from '@mui/material/Unstable_Grid2';
+import { connectToStream, leaveStream } from './store/viewerMiddleware';
 
 const ParticipantInformation = () => {
     const streamInfo = useAppSelector(getStreamInfo);

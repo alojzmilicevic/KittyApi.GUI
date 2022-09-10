@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { cleanup } from "./store/store";
-import { init } from "./store/viewerMiddleware";
+import { cleanup, init } from './store/viewerMiddleware';
 import { styled } from "@mui/material";
 import { ConnectMenu } from './ConnectMenu';
 import { ConnectionStatus, getConnectionStatus } from "../store/app";
