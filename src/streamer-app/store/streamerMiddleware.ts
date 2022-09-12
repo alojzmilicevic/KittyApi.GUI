@@ -1,5 +1,6 @@
 import StreamerConnectionHandler from "../peer-connection/StreamerConnectionHandler";
 import { createAction } from "@reduxjs/toolkit";
+import { logout } from '../../store/app';
 
 let client: StreamerConnectionHandler | null = null;
 
@@ -12,9 +13,12 @@ export const streamerMiddleware = (store: any) => (next: any) => (action: any) =
             break;
 
         case cleanup.type:
+            console.log('CLEARNING');
             client?.cleanUpConnection();
             break;
-
+        case logout.type:
+            client?.logout();
+            break;
         default:
     }
 

@@ -41,10 +41,7 @@ export class StreamerPeerConnection {
 
         onIceConnectionStateChange(() => this.onUserLeftStream(user), pc);
 
-        mediaStream.getTracks().forEach(track => {
-            track.applyConstraints({ width: 1280, height: 720, aspectRatio: 1.777777778 });
-            return pc?.addTrack(track, mediaStream);
-        });
+        mediaStream.getTracks().forEach(track => pc?.addTrack(track, mediaStream));
 
         const offer = await pc.createOffer();
         await pc.setLocalDescription(offer);

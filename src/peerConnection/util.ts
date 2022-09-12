@@ -10,3 +10,10 @@ export const onIceConnectionStateChange = (onDisconnect: () => void | Promise<vo
         }
     }
 }
+
+export const setLocalVideo = (stream: MediaStream | null) => {
+    const elementId = 'localvideo';
+    let video: HTMLVideoElement = document.getElementById(elementId) as HTMLVideoElement;
+
+    if (video) video.srcObject = stream;
+}

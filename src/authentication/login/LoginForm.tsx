@@ -5,16 +5,24 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import { Container } from '@mui/material';
+import { Container, styled } from '@mui/material';
 import { Controller } from 'react-hook-form';
 import { useLogin } from './useLogin';
 import { CatIcon } from '../../assets/CatIcon';
+import { grey } from '@mui/material/colors';
 
 const Copyright = (props: any) => (
-    <Typography variant='body2' color='text.secondary' align='center' {...props}>
+    <Typography variant='body2' align='center' {...props}>
         {`Copyright © budsub ${new Date().getFullYear()}.`}
     </Typography>
 );
+
+
+const CssTextField = styled(TextField)(({ theme }) => ({
+    '& label.Mui-focused': {
+        color: theme.palette.primary.contrastText
+    },
+}));
 
 const Login = () => {
     const { onSubmit, handleSubmit, control, errors } = useLogin();
@@ -29,7 +37,7 @@ const Login = () => {
                     alignItems: 'center'
                 }}
             >
-                <CatIcon fill={'black'} size={128} />
+                <CatIcon fill={grey[600]} size={128} />
                 <Typography component='h1' variant='h5'>
                     Sign in
                 </Typography>
@@ -38,7 +46,7 @@ const Login = () => {
                         name='email'
                         control={control}
                         defaultValue=''
-                        render={({ field }) => <TextField
+                        render={({ field }) => <CssTextField
                             margin='normal'
                             required
                             fullWidth
@@ -52,7 +60,7 @@ const Login = () => {
                         name='password'
                         control={control}
                         defaultValue=''
-                        render={({ field }) => <TextField
+                        render={({ field }) => <CssTextField
                             margin='normal'
                             required
                             fullWidth
@@ -65,7 +73,7 @@ const Login = () => {
                             {...field} />}
                     />
                     <FormControlLabel
-                        control={<Checkbox value='remember' color='primary' />}
+                        control={<Checkbox value='remember' />}
                         label='Remember me'
                     />
                     <Button

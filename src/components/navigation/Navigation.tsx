@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box';
-import { AppBar, Button, IconButton, Skeleton, Toolbar, Tooltip, Typography } from '@mui/material';
+import { AppBar, Button, IconButton, Skeleton, styled, Toolbar, Tooltip, Typography } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import { UserModel } from '../../streamer-app/user/UserModel';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -16,6 +16,8 @@ interface Props {
     loading: boolean;
 }
 
+const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
+
 const SkeletonContainer = () => {
     return <Grid container spacing={4}>
         <Grid>
@@ -30,7 +32,7 @@ const SkeletonContainer = () => {
 const Navigation = ({ user, logout, loading }: Props) => {
     return (
         <Box>
-            <AppBar position='static'>
+            <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
                 <Toolbar style={{display: 'flex', justifyContent: 'space-between'}}>
                     <div style={{display: 'flex', alignItems: 'center'}}>
                         <IconButton component={NavLink} to={'/'} disableRipple size={'small'}>
@@ -40,7 +42,7 @@ const Navigation = ({ user, logout, loading }: Props) => {
                             variant='h6'
                             component={NavLink}
                             to={'/'}
-                            sx={{ textDecoration: 'none', color: 'primary.contrastText' }}
+                            sx={{ textDecoration: 'none', color: 'inherit' }}
                         >
                             KittyIO
                         </Typography>
@@ -73,6 +75,7 @@ const Navigation = ({ user, logout, loading }: Props) => {
                     </div>
                 </Toolbar>
             </AppBar>
+            <Offset />
         </Box>
     );
 };

@@ -43,7 +43,6 @@ class SignalingChannel {
     }
 
     sendMessageToViewer = async (message: any, user: string) => {
-        console.log("Sending message to viewer", user);
         if (this.connection) {
             await this.connection.invoke(SignalRMessageTypes.SEND_MESSAGE_TO_VIEWER_BASED_ON_USER_NAME, 'streamer', user, message);
         } else {
@@ -53,7 +52,6 @@ class SignalingChannel {
     };
 
     sendMessageToStreamer = async (message: { type: string, payload: any }, sender: string) => {
-        console.log('sending message to sender', sender);
         if (this.connection) {
             await this.connection.invoke(SignalRMessageTypes.SEND_MESSAGE_TO_STREAMER, sender, message);
         } else {

@@ -3,7 +3,7 @@ import { EnhancedStore } from "@reduxjs/toolkit";
 import { AppDispatch } from "../../store/store";
 import { SignalingChannel } from "../../signaling/SignalingChannel";
 import { IceServerConfig } from "../../peerConnection/constants";
-import { onIceConnectionStateChange } from "../../peerConnection/util";
+import { onIceConnectionStateChange, setLocalVideo } from '../../peerConnection/util';
 import { ConnectionStatus, getUser, setConnectionStatus, setStreamInfo } from '../../store/app';
 import * as StreamApi from "../api/stream";
 
@@ -22,20 +22,13 @@ export class ViewerPeerConnection {
     leaveStream = async () => {
         if (!this.peer) return;
 
-        this.setLocalVideo(null);
+        setLocalVideo(null);
         this.peer.pc.close();
         this.peer = null;
         const streamInfo = await StreamApi.leaveStream();
         this.dispatch(setConnectionStatus({connectionStatus: ConnectionStatus.IDLE}));
         this.dispatch(setStreamInfo(streamInfo));
     };
-
-    setLocalVideo = (stream: MediaStream | null) => {
-        const elementId = 'viewer-video';
-        let video: HTMLVideoElement = document.getElementById(elementId) as HTMLVideoElement;
-
-        if (video) video.srcObject = stream;
-    }
 
     async connectToStream() {
         if (this.peer) return;
@@ -57,7 +50,7 @@ export class ViewerPeerConnection {
                     break;
             }
         }
-        pc.ontrack = (ev: RTCTrackEvent) => this.setLocalVideo(ev.streams[0]);
+        pc.ontrack = (ev: RTCTrackEvent) => setLocalVideo(ev.streams[0]);
 
         await StreamApi.joinStream();
     }

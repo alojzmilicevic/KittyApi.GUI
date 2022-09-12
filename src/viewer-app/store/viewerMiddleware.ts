@@ -1,5 +1,6 @@
 import { createAction } from "@reduxjs/toolkit";
 import ViewerConnectionHandler from "../peer-connection/ViewerConnectionHandler";
+import { logout } from '../../store/app';
 
 let client: ViewerConnectionHandler | null = null;
 
@@ -13,6 +14,7 @@ export const viewerMiddleware = (store: any) => (next: any) => (action: any) => 
 
         case cleanup.type:
             client?.cleanUpConnection();
+            client = null;
             break;
 
         case leaveStream.type:
@@ -23,6 +25,9 @@ export const viewerMiddleware = (store: any) => (next: any) => (action: any) => 
             client?.connectToStream();
             break;
 
+        case logout.type:
+            client?.logout();
+            break;
         default:
     }
 

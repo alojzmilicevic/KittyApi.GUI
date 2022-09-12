@@ -1,8 +1,8 @@
-import { configureStore } from "@reduxjs/toolkit";
-import { streamerMiddleware } from "../streamer-app/store/streamerMiddleware";
-import { viewerMiddleware } from "../viewer-app/store/viewerMiddleware";
-import { viewer } from "../viewer-app/store/store";
-import { app } from "./app";
+import { configureStore } from '@reduxjs/toolkit';
+import { viewerMiddleware } from '../viewer-app/store/viewerMiddleware';
+import { viewer } from '../viewer-app/store/store';
+import { app } from './app';
+import { streamerMiddleware } from '../streamer-app/store/streamerMiddleware';
 
 export const store = configureStore({
     reducer: {

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { UserModel } from "./streamer-app/user/UserModel";
 import { getUserData } from "./authentication/authentication";
 import { useAppDispatch, useAppSelector } from './store/hooks';
-import { getUser, setUserInfo } from './store/app';
+import { getUser, logout as logoutAction, setUserInfo } from './store/app';
 
 export function useApp() {
     const [ready, setReady] = useState(false);
@@ -10,8 +10,7 @@ export function useApp() {
     const user = useAppSelector(getUser);
 
     const logout = useCallback(() => {
-        dispatch(setUserInfo(undefined));
-        localStorage.removeItem('token');
+        dispatch(logoutAction())
     }, [dispatch])
 
     const fetchUser = useCallback(() => {

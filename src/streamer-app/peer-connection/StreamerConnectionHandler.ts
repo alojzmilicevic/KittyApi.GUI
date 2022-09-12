@@ -6,6 +6,7 @@ import { StreamerPeerConnection } from "./StreamerPeerConnection";
 import { MediaConstraints } from "../../peerConnection/constants";
 import { setStreamInfo } from '../../store/app';
 import { getStreamInfo } from '../../viewer-app/api/stream';
+import { setLocalVideo } from '../../peerConnection/util';
 
 export default class StreamerConnectionHandler {
     store: EnhancedStore;
@@ -27,15 +28,9 @@ export default class StreamerConnectionHandler {
 
     async initClient() {
         this.stream = await navigator.mediaDevices.getUserMedia(MediaConstraints);
-        this.setLocalVideo(this.stream);
+        setLocalVideo(this.stream);
         const streamInfo = await getStreamInfo(1);
         this.dispatch(setStreamInfo(streamInfo));
-    }
-
-    setLocalVideo = (stream: MediaStream | null) => {
-        const elementId = 'streamer-video';
-        let video: HTMLVideoElement = document.getElementById(elementId) as HTMLVideoElement;
-        video.srcObject = stream;
     }
 
     async cleanUpConnection() {
@@ -46,8 +41,12 @@ export default class StreamerConnectionHandler {
         await this.streamerPeerConnection.onUserLeftStream(user);
     }
 
+    logout() {
+        localStorage.removeItem('token');
+    }
+
     onSocketMessage = async (user: string, message: Message) => {
-        console.log(`got ${message.type} from ${user}`)
+        //console.log(`got ${message.type} from ${user}`)
         switch (message.type) {
             case MessageTypes.INCOMING_CALL:
                 await this.streamerPeerConnection.onIncomingCall(user, this.stream!);

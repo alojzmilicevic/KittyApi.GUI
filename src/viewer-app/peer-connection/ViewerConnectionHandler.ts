@@ -1,10 +1,10 @@
-import { EnhancedStore } from "@reduxjs/toolkit";
-import { AppDispatch } from "../../store/store";
-import { SignalingChannel } from "../../signaling/SignalingChannel";
-import { ClientType, Message, MessageTypes } from "../../signaling/constants";
-import { ViewerPeerConnection } from "./ViewerPeerConnection";
-import { getStreamInfo } from "../api/stream";
-import { setStreamInfo } from '../../store/app';
+import { EnhancedStore } from '@reduxjs/toolkit';
+import { AppDispatch } from '../../store/store';
+import { SignalingChannel } from '../../signaling/SignalingChannel';
+import { ClientType, Message, MessageTypes } from '../../signaling/constants';
+import { ViewerPeerConnection } from './ViewerPeerConnection';
+import { getStreamInfo } from '../api/stream';
+import { ConnectionStatus, getConnectionStatus, setStreamInfo, setUserInfo } from '../../store/app';
 
 export default class ViewerConnectionHandler {
     store: EnhancedStore;
@@ -41,8 +41,17 @@ export default class ViewerConnectionHandler {
         await this.viewerPeerConnection.leaveStream();
     }
 
+    async logout() {
+        const streamState = getConnectionStatus(this.store.getState());
+        if (streamState !== ConnectionStatus.IDLE) {
+            await this.leaveStream();
+        }
+        this.dispatch(setUserInfo(undefined));
+        localStorage.removeItem('token');
+    }
+
     onSocketMessage = async (user: string, message: Message) => {
-        console.log(`got ${message.type} from ${user}`)
+        //console.log(`got ${message.type} from ${user}`)
         switch (message.type) {
             case MessageTypes.CALL:
                 await this.connectToStream();
@@ -54,5 +63,5 @@ export default class ViewerConnectionHandler {
                 await this.viewerPeerConnection.onIceCandidate(message.payload);
                 break;
         }
-    }
+    };
 }
