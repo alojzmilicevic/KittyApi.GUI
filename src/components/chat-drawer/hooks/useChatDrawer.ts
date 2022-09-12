@@ -5,7 +5,7 @@ const drawerWidth = 340;
 
 export function useChatDrawer() {
     const { width, height } = useWindowSize();
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(true);
 
     const containerWidth = open ? width - drawerWidth : width;
 

@@ -2,8 +2,8 @@ import { MessageTypes } from "../../signaling/constants";
 import { EnhancedStore } from "@reduxjs/toolkit";
 import { AppDispatch } from "../../store/store";
 import { SignalingChannel } from "../../signaling/SignalingChannel";
-import { IceServerConfig } from "../../peerConnection/constants";
-import { onIceConnectionStateChange, setLocalVideo } from '../../peerConnection/util';
+import { IceServerConfig } from "../../peer-connection/constants";
+import { onIceConnectionStateChange, setLocalVideo } from '../../peer-connection/util';
 import { ConnectionStatus, getUser, setConnectionStatus, setStreamInfo } from '../../store/app';
 import * as StreamApi from "../api/stream";
 

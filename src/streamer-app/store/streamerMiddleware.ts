@@ -13,7 +13,6 @@ export const streamerMiddleware = (store: any) => (next: any) => (action: any) =
             break;
 
         case cleanup.type:
-            console.log('CLEARNING');
             client?.cleanUpConnection();
             break;
         case logout.type:

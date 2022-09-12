@@ -9,7 +9,7 @@ export const store = configureStore({
         viewer: viewer.reducer,
         app: app.reducer,
     },
-    middleware: getDefaultMiddleware => getDefaultMiddleware().concat(streamerMiddleware, viewerMiddleware),
+    middleware: getDefaultMiddleware => getDefaultMiddleware().concat(viewerMiddleware, streamerMiddleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

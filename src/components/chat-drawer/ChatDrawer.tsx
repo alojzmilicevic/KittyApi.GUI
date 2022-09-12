@@ -113,7 +113,3 @@ export const ChatDrawer = ({ open, direction, drawerWidth, handleDrawerOpen, han
         </>
     );
 };
-;
-;
-;
-;

@@ -3,10 +3,10 @@ import { AppDispatch } from "../../store/store";
 import { SignalingChannel } from "../../signaling/SignalingChannel";
 import { ClientType, Message, MessageTypes } from "../../signaling/constants";
 import { StreamerPeerConnection } from "./StreamerPeerConnection";
-import { MediaConstraints } from "../../peerConnection/constants";
-import { setStreamInfo } from '../../store/app';
+import { MediaConstraints } from "../../peer-connection/constants";
+import { setStreamInfo, setUserInfo } from '../../store/app';
 import { getStreamInfo } from '../../viewer-app/api/stream';
-import { setLocalVideo } from '../../peerConnection/util';
+import { setLocalVideo } from '../../peer-connection/util';
 
 export default class StreamerConnectionHandler {
     store: EnhancedStore;
@@ -42,6 +42,7 @@ export default class StreamerConnectionHandler {
     }
 
     logout() {
+        this.dispatch(setUserInfo(undefined));
         localStorage.removeItem('token');
     }
 
