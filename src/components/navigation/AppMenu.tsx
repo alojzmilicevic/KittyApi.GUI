@@ -70,8 +70,6 @@ function useAppMenu(logout: () => void) {
 
     const menuOptions: MenuOption[] = [
         { text: 'Profile', path: '/profile', icon: <Avatar />, showBottomBorder: true },
-        { text: 'Manage streams', path: '/admin', icon: <AdminPanelSettings /> },
-        { text: 'Settings', path: '/settings', icon: <Settings fontSize='small' /> },
         { text: 'Logout', path: '/login', icon: <Logout fontSize='small' />, onClick: logout }
     ];
 

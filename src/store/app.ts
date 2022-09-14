@@ -48,7 +48,6 @@ export const getUser = (state: RootState) => state.app.user;
 export const getStreamInfo = (state: RootState) => state.app.streamInfo;
 export const getConnectionStatus = (state: RootState) => state.app.connectionStatus;
 
-
 // Action creators are generated for each case reducer function
 export const { setConnectionStatus, setUserInfo, setStreamInfo } = app.actions;
 export const logout = createAction('app/logout');

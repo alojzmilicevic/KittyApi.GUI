@@ -12,7 +12,8 @@ import { ProfilePage } from './profile-page/ProfilePage';
 import { UserModel } from './streamer-app/user/UserModel';
 
 const MainContainer = styled('div')({
-    height: '100%'
+    height: '100%',
+    overflow:'hidden',
 });
 
 type ProtectedRouteProps = {
