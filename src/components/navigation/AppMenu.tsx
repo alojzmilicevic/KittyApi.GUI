@@ -1,7 +1,7 @@
 import React from 'react';
 import { Divider, IconButton, ListItemIcon, Menu, MenuItem } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
-import { AdminPanelSettings, Logout, Settings } from '@mui/icons-material';
+import { Logout } from '@mui/icons-material';
 import { NavLink } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import { useAppSelector } from '../../store/hooks';

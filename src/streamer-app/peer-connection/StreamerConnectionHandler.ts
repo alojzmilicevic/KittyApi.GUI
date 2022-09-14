@@ -1,10 +1,10 @@
-import { EnhancedStore } from "@reduxjs/toolkit";
-import { AppDispatch } from "../../store/store";
-import { SignalingChannel } from "../../signaling/SignalingChannel";
-import { ClientType, Message, MessageTypes } from "../../signaling/constants";
-import { StreamerPeerConnection } from "./StreamerPeerConnection";
-import { MediaConstraints } from "../../peer-connection/constants";
-import { setStreamInfo, setUserInfo } from '../../store/app';
+import { EnhancedStore } from '@reduxjs/toolkit';
+import { AppDispatch } from '../../store/store';
+import { SignalingChannel } from '../../signaling/SignalingChannel';
+import { ClientType, Message, MessageTypes } from '../../signaling/constants';
+import { StreamerPeerConnection } from './StreamerPeerConnection';
+import { MediaConstraints } from '../../peer-connection/constants';
+import { setStreamInfo } from '../../store/app';
 import { getStreamInfo } from '../../viewer-app/api/stream';
 import { setLocalVideo } from '../../peer-connection/util';
 
@@ -42,8 +42,6 @@ export default class StreamerConnectionHandler {
     }
 
     logout() {
-        this.dispatch(setUserInfo(undefined));
-        localStorage.removeItem('token');
     }
 
     onSocketMessage = async (user: string, message: Message) => {

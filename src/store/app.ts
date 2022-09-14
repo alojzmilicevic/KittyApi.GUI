@@ -1,6 +1,6 @@
 import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from './store';
-import { UserModel } from '../streamer-app/user/UserModel';
+import { UserModel } from '../user/UserModel';
 
 export type StreamInfo = {
     streamId: number,

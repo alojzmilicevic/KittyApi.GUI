@@ -9,7 +9,7 @@ import { styled } from '@mui/material';
 import './index.css';
 import { LoadingSpinner } from './components/LoadingSpinner';
 import { ProfilePage } from './profile-page/ProfilePage';
-import { UserModel } from './streamer-app/user/UserModel';
+import { UserModel } from './user/UserModel';
 
 const MainContainer = styled('div')({
     height: '100%',

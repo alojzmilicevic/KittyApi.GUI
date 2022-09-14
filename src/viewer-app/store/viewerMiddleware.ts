@@ -6,7 +6,7 @@ let client: ViewerConnectionHandler | null = null;
 
 const baseAction = 'viewer';
 
-export const viewerMiddleware = (store: any) => (next: any) => (action: any) => {
+export const viewerMiddleware = (store: any) => (next: any) => async (action: any) => {
     switch (action.type) {
         case init.type:
             client = new ViewerConnectionHandler(store);
@@ -26,7 +26,7 @@ export const viewerMiddleware = (store: any) => (next: any) => (action: any) => 
             break;
 
         case logout.type:
-            client?.logout();
+            await client?.logout();
             break;
         default:
     }

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { UserModel } from "./streamer-app/user/UserModel";
+import { UserModel } from "./user/UserModel";
 import { getUserData } from "./authentication/authentication";
 import { useAppDispatch, useAppSelector } from './store/hooks';
 import { getUser, logout as logoutAction, setUserInfo } from './store/app';

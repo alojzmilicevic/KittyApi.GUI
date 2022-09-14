@@ -4,7 +4,7 @@ import { SignalingChannel } from '../../signaling/SignalingChannel';
 import { ClientType, Message, MessageTypes } from '../../signaling/constants';
 import { ViewerPeerConnection } from './ViewerPeerConnection';
 import { getStreamInfo } from '../api/stream';
-import { ConnectionStatus, getConnectionStatus, setStreamInfo, setUserInfo } from '../../store/app';
+import { ConnectionStatus, getConnectionStatus, setStreamInfo } from '../../store/app';
 
 export default class ViewerConnectionHandler {
     store: EnhancedStore;
@@ -46,8 +46,6 @@ export default class ViewerConnectionHandler {
         if (streamState !== ConnectionStatus.IDLE) {
             await this.leaveStream();
         }
-        this.dispatch(setUserInfo(undefined));
-        localStorage.removeItem('token');
     }
 
     onSocketMessage = async (user: string, message: Message) => {

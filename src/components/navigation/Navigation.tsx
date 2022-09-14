@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import { AppBar, Button, IconButton, Skeleton, styled, Toolbar, Tooltip, Typography } from '@mui/material';
 import { NavLink } from 'react-router-dom';
-import { UserModel } from '../../streamer-app/user/UserModel';
+import { UserModel } from '../../user/UserModel';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import React from 'react';
 import { AppMenu } from './AppMenu';
@@ -62,7 +62,6 @@ const Navigation = ({ user, logout, loading }: Props) => {
                                 color='inherit'
                                 component={NavLink}
                                 to={'/login'}
-                                onClick={logout}
                                 variant={'outlined'}
                                 startIcon={<AccountCircleIcon sx={{ width: 24, height: 24 }} />}
                             >

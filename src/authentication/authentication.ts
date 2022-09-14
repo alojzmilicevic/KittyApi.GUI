@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { UserModel } from '../streamer-app/user/UserModel';
+import { UserModel } from '../user/UserModel';
 
 const firstUrl = 'https://localhost:7076';
 export const appUrl = `${firstUrl || process.env.REACT_APP_SERVER_URL}/api`;

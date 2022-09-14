@@ -3,7 +3,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import { default as Grid } from '@mui/material/Unstable_Grid2/Grid2';
 import Typography from '@mui/material/Typography';
-import { UserModel } from '../../streamer-app/user/UserModel';
+import { UserModel } from '../../user/UserModel';
 import { useAppSelector } from '../../store/hooks';
 import { getStreamInfo } from '../../store/app';
 import GroupIcon from '@mui/icons-material/Group';
