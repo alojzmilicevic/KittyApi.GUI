@@ -1,5 +1,5 @@
-import StreamerConnectionHandler from "../peer-connection/StreamerConnectionHandler";
-import { createAction } from "@reduxjs/toolkit";
+import StreamerConnectionHandler from '../peer-connection/StreamerConnectionHandler';
+import { createAction } from '@reduxjs/toolkit';
 import { logout } from '../../store/app';
 
 let client: StreamerConnectionHandler | null = null;
@@ -7,13 +7,11 @@ let client: StreamerConnectionHandler | null = null;
 export const streamerMiddleware = (store: any) => (next: any) => (action: any) => {
     switch (action.type) {
         case init.type:
-            if (!client) {
-                client = new StreamerConnectionHandler(store);
-            }
+            client = new StreamerConnectionHandler(store);
             break;
-
         case cleanup.type:
             client?.cleanUpConnection();
+            client = null;
             break;
         case logout.type:
             client?.logout();

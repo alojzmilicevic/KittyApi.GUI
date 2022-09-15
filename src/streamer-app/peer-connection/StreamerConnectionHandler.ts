@@ -14,6 +14,7 @@ export default class StreamerConnectionHandler {
     stream: MediaStream | null = null;
     signaling: SignalingChannel;
     streamerPeerConnection: StreamerPeerConnection;
+    localStream: MediaStream | null = null;
 
     constructor(store: EnhancedStore) {
         this.store = store;
@@ -34,6 +35,7 @@ export default class StreamerConnectionHandler {
     }
 
     async cleanUpConnection() {
+        this.stream?.getTracks()[0].stop();
         await this.signaling.cleanUpConnection();
     }
 

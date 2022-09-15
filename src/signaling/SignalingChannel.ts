@@ -11,6 +11,7 @@ class SignalingChannel {
     connection: HubConnection | null = null;
     onSocketMessage: (user: any, message: any) => void;
     clientType: string;
+    shouldStopConnection: boolean = false;
 
     constructor(onMessage: any, clientType: ClientType, shouldStartConnection: boolean = true) {
         this.onSocketMessage = onMessage;
@@ -25,8 +26,6 @@ class SignalingChannel {
     }
 
     async init() {
-        if (this.connection) return;
-
         const token = localStorage.getItem('token');
         this.connection = new HubConnectionBuilder()
             .withUrl(`${process.env.REACT_APP_SERVER_URL}/chatHub?clientType=${this.clientType}&token=${token}`, {
@@ -36,10 +35,15 @@ class SignalingChannel {
             .withAutomaticReconnect()
             .build();
 
-        await this.connection?.start();
+        this.connection.start().then(() => {
+            this.connection?.on('ReceiveMessage',
+                (user, message) => this.onSocketMessage(user, message));
 
-        this.connection?.on('ReceiveMessage',
-            (user, message) => this.onSocketMessage(user, message));
+            if (this.shouldStopConnection) {
+                this.cleanUpConnection();
+                this.shouldStopConnection = false;
+            }
+        });
     }
 
     sendMessageToViewer = async (message: any, user: string) => {
@@ -61,7 +65,12 @@ class SignalingChannel {
     };
 
     async cleanUpConnection() {
-        if (!this.connection || this.connection.state === HubConnectionState.Connecting) return;
+        if (!this.connection) return;
+
+        if (this.connection.state === HubConnectionState.Connecting) {
+            this.shouldStopConnection = true;
+            return;
+        }
         this.connection.off('ReceiveMessage');
         await this.connection.stop();
         this.connection = null;
