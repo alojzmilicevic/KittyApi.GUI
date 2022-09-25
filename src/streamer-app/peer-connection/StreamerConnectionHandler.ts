@@ -14,7 +14,6 @@ export default class StreamerConnectionHandler {
     stream: MediaStream | null = null;
     signaling: SignalingChannel;
     streamerPeerConnection: StreamerPeerConnection;
-    localStream: MediaStream | null = null;
 
     constructor(store: EnhancedStore) {
         this.store = store;

@@ -1,5 +1,6 @@
 import axios, { AxiosError } from 'axios';
 import { appUrl } from '../../authentication/authentication';
+import { ErrorResponse, generateErrorMessage } from '../../errors/errorFactory';
 
 const streamUrl = `${appUrl}/stream`;
 
@@ -17,11 +18,12 @@ streamAxios.interceptors.request.use(req => {
     return Promise.reject(error);
 });
 
+
 export const joinStream = async () =>
-    streamAxios.post<string>(`${streamUrl}/join-stream`, {streamId: 1})
+    streamAxios.post<string>(`${streamUrl}/join-stream`, { streamId: 1 })
         .then(res => res.data)
-        .catch((e: AxiosError) => {
-            //console.log(e.response);
+        .catch((e: AxiosError<ErrorResponse>) => {
+            throw new Error(generateErrorMessage(e.response!.data.errors));
         });
 
 export const getStreamInfo = async (streamId: number) =>

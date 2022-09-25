@@ -36,7 +36,7 @@ export class ViewerPeerConnection {
 
         const pc = new RTCPeerConnection(IceServerConfig);
         const user = getUser(this.store.getState())!;
-        this.peer = { from: user.username, pc };
+        this.peer = { from: user.userId, pc };
 
         onIceConnectionStateChange(() => this.leaveStream(), pc);
 
@@ -66,7 +66,7 @@ export class ViewerPeerConnection {
         await pc.setLocalDescription(answer);
         const user = getUser(this.store.getState())!;
 
-        await this.signaler.sendMessageToStreamer({ type: MessageTypes.ANSWER, payload: answer }, user.username);
+        await this.signaler.sendMessageToStreamer({ type: MessageTypes.ANSWER, payload: answer }, user.userId);
     }
 
     async onIceCandidate(iceCandidate: any) {

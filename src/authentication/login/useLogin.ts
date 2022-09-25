@@ -2,6 +2,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { getUserData, login } from '../authentication';
 import { useAppDispatch } from '../../store/hooks';
 import { setUserInfo } from '../../store/app';
+import { generateErrorMessage } from '../../errors/errorFactory';
 
 interface IFormInput {
     email: string;
@@ -19,12 +20,11 @@ export function useLogin() {
                 const user = await getUserData();
                 dispatch(setUserInfo(user));
             }
-
-            // fetch user information
         }).catch(e => {
+            const errorCode = e.response.data.errors;
             setError('email', {
-                type: 'custom',
-                message: "Incorrect credentials, please try again."
+                type: errorCode,
+                message: generateErrorMessage(errorCode)
             });
         });
     };

@@ -25,31 +25,36 @@ const ProtectedRoute = ({ user, redirectPath = '/login' }: ProtectedRouteProps) 
     if (!user) {
         return <Navigate to={redirectPath} replace />;
     }
-
     return <Outlet />;
 };
+
+const RedirectRoute = ({ user, redirectPath = '/' }: ProtectedRouteProps) => {
+    if (user) {
+        return <Navigate to={redirectPath} replace />;
+    }
+    return <Outlet />;
+}
 
 function App() {
     const { user, ready, logout } = useApp();
 
     return <MainContainer>
-            <Navigation loading={!ready} user={user} logout={logout} />
-            <LoadingSpinner />
-            {ready &&
-                <Routes>
-                    <Route element={<ProtectedRoute user={user} />}>
-                        <Route element={<StreamerApp />} path={'/streamer'}/>
-                        <Route element={<ProfilePage />} path={'/profile'}/>
-                        <Route element={<ViewerApp />} path={'/'}/>
-                    </Route>
-                    <Route element={user ? <Navigate to={'/'} />: <Login />} path={'/login'}/>
-                    <Route
-                        path='*'
-                        element={<Navigate to={user ? '/' : '/login'} />}
-                    />
-                </Routes>
-            }
-        </MainContainer>
+        <Navigation loading={!ready} user={user} logout={logout} />
+        <LoadingSpinner />
+        {ready &&
+            <Routes>
+                <Route element={<ProtectedRoute user={user} />}>
+                    <Route element={<StreamerApp />} path={'/streamer'} />
+                    <Route element={<ProfilePage />} path={'/profile'} />
+                    <Route element={<ViewerApp />} path={'/'} />
+                </Route>
+                <Route element={<RedirectRoute user={user} />}>
+                    <Route element={<Login />} path={'/login'} />
+                    <Route element={<Navigate to={'login'} />} path={'*'} />
+                </Route>
+            </Routes>
+        }
+    </MainContainer>;
 }
 
 export default App;
