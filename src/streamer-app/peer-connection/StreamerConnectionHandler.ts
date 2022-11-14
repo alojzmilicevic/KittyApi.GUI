@@ -4,9 +4,15 @@ import { SignalingChannel } from '../../signaling/SignalingChannel';
 import { ClientType, Message, MessageTypes } from '../../signaling/constants';
 import { StreamerPeerConnection } from './StreamerPeerConnection';
 import { MediaConstraints } from '../../peer-connection/constants';
-import { setStreamInfo } from '../../store/app';
-import { getStreamInfo } from '../../viewer-app/api/stream';
+import {
+    ConnectionStatus,
+    setConnectionStatus,
+    setStreamInfo,
+    getStreamInfo,
+} from '../../store/app';
 import { setLocalVideo } from '../../peer-connection/util';
+import { StartStreamInput } from '../App';
+import * as StreamerApi from '../streamer.api';
 
 export default class StreamerConnectionHandler {
     store: EnhancedStore;
@@ -18,8 +24,16 @@ export default class StreamerConnectionHandler {
     constructor(store: EnhancedStore) {
         this.store = store;
         this.dispatch = store.dispatch;
-        this.signaling = new SignalingChannel(this.onSocketMessage, ClientType.STREAMER);
-        this.streamerPeerConnection = new StreamerPeerConnection(store, this.dispatch, this.signaling);
+        this.signaling = new SignalingChannel(
+            this.onSocketMessage,
+            ClientType.STREAMER,
+            false
+        );
+        this.streamerPeerConnection = new StreamerPeerConnection(
+            store,
+            this.dispatch,
+            this.signaling
+        );
         // Even though im awaiting functions inside the initClient function the constructor will still be completed.
         // This means that people using functions exposed inside this class can do so even if this class isn't ready.
         // Use Readiness Design Patter to fix this
@@ -27,10 +41,59 @@ export default class StreamerConnectionHandler {
     }
 
     async initClient() {
-        this.stream = await navigator.mediaDevices.getUserMedia(MediaConstraints);
+        this.stream = await navigator.mediaDevices.getUserMedia(
+            MediaConstraints
+        );
         setLocalVideo(this.stream);
-        const streamInfo = await getStreamInfo(1);
-        this.dispatch(setStreamInfo(streamInfo));
+    }
+
+    async startStream({ title, thumbnail }: StartStreamInput) {
+        this.dispatch(
+            setConnectionStatus({
+                connectionStatus: ConnectionStatus.CONNECTING,
+            })
+        );
+
+        try {
+            const stream = await StreamerApi.startStream(title, thumbnail);
+            this.signaling.init();
+            this.dispatch(setStreamInfo(stream));
+            this.dispatch(
+                setConnectionStatus({
+                    connectionStatus: ConnectionStatus.CONNECTED,
+                })
+            );
+        } catch (error) {
+            console.log(error);
+
+            setConnectionStatus({
+                connectionStatus: ConnectionStatus.IDLE,
+            });
+        }
+    }
+
+    async endStream() {
+        this.dispatch(
+            setConnectionStatus({
+                connectionStatus: ConnectionStatus.CONNECTING,
+            })
+        );
+
+        try {
+            const streamId = getStreamInfo(this.store.getState())?.streamId;
+            if (streamId) {
+                await StreamerApi.endStream(streamId);
+                this.cleanUpConnection();
+                this.dispatch(
+                    setConnectionStatus({
+                        connectionStatus: ConnectionStatus.IDLE,
+                    })
+                );
+                this.dispatch(setStreamInfo(undefined));
+            }
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     async cleanUpConnection() {
@@ -42,21 +105,26 @@ export default class StreamerConnectionHandler {
         await this.streamerPeerConnection.onUserLeftStream(user);
     }
 
-    logout() {
-    }
+    logout() {}
 
     onSocketMessage = async (user: string, message: Message) => {
-        //console.log(`got ${message.type} from ${user}`)
+        console.log(`got ${message.type} from ${user}`)
         switch (message.type) {
             case MessageTypes.INCOMING_CALL:
-                await this.streamerPeerConnection.onIncomingCall(user, this.stream!);
+                await this.streamerPeerConnection.onIncomingCall(
+                    user,
+                    this.stream!
+                );
                 break;
             case MessageTypes.ANSWER:
-                await this.streamerPeerConnection.onAnswer(user, message.payload as RTCSessionDescriptionInit);
+                await this.streamerPeerConnection.onAnswer(
+                    user,
+                    message.payload as RTCSessionDescriptionInit
+                );
                 break;
             case MessageTypes.HANGUP:
                 await this.onUserLeftStream(user);
                 break;
         }
-    }
+    };
 }

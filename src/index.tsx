@@ -15,16 +15,14 @@ const root = ReactDOM.createRoot(
 const theme = createMyTheme(true);
 
 root.render(
-    <React.StrictMode>
-        <BrowserRouter>
-            <Provider store={store}>
-                <ThemeProvider theme={theme}>
-                    <CssBaseline />
-                    <App />
-                </ThemeProvider>
-            </Provider>
-        </BrowserRouter>
-    </React.StrictMode>
+    <BrowserRouter>
+        <Provider store={store}>
+            <ThemeProvider theme={theme}>
+                <CssBaseline />
+                <App />
+            </ThemeProvider>
+        </Provider>
+    </BrowserRouter>
 );
 
 

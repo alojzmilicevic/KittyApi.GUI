@@ -30,7 +30,7 @@ export class ViewerPeerConnection {
         this.dispatch(setStreamInfo(streamInfo));
     };
 
-    async connectToStream() {
+    async connectToStream(streamId: string) {
         if (this.peer) return;
         this.dispatch(setConnectionStatus({ connectionStatus: ConnectionStatus.CONNECTING }));
 
@@ -40,7 +40,7 @@ export class ViewerPeerConnection {
 
         onIceConnectionStateChange(() => this.leaveStream(), pc);
 
-        pc.onconnectionstatechange = (ev) => {
+        pc.onconnectionstatechange = () => {
             switch (pc.connectionState) {
                 case "connecting":
                     break;
@@ -52,7 +52,7 @@ export class ViewerPeerConnection {
         }
         pc.ontrack = (ev: RTCTrackEvent) => setLocalVideo(ev.streams[0]);
 
-        await StreamApi.joinStream();
+        await StreamApi.joinStream(streamId);
     }
 
     async handleOffer(message: any) {

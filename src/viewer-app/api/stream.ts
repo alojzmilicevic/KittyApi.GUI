@@ -6,29 +6,42 @@ const streamUrl = `${appUrl}/stream`;
 
 const streamAxios = axios.create();
 
-streamAxios.interceptors.request.use(req => {
-    const token = localStorage.getItem('token');
+streamAxios.interceptors.request.use(
+    (req) => {
+        const token = localStorage.getItem('token');
 
-    const controller = new AbortController();
-    if (!token) {
-        controller.abort();
+        const controller = new AbortController();
+        if (!token) {
+            controller.abort();
+        }
+        return {
+            ...req,
+            signal: controller.signal,
+            headers: { ...req.headers, Authorization: `Bearer ${token}` },
+        };
+    },
+    (error) => {
+        return Promise.reject(error);
     }
-    return { ...req, signal: controller.signal, headers: { ...req.headers, Authorization: `Bearer ${token}` } };
-}, (error) => {
-    return Promise.reject(error);
-});
+);
 
-
-export const joinStream = async () =>
-    streamAxios.post<string>(`${streamUrl}/join-stream`, { streamId: 1 })
-        .then(res => res.data)
+export const joinStream = async (streamId: string) =>
+    streamAxios
+        .post<string>(`${streamUrl}/join-stream/${streamId}`)
+        .then((res) => res.data)
         .catch((e: AxiosError<ErrorResponse>) => {
             throw new Error(generateErrorMessage(e.response!.data.errors));
         });
 
-export const getStreamInfo = async (streamId: number) =>
-    await streamAxios.get(`${streamUrl}/stream-info/${streamId}`).then(res => res.data);
+export const getStreamInfo = async (streamId: string) =>
+    await streamAxios
+        .get(`${streamUrl}/stream-info/${streamId}`)
+        .then((res) => res.data);
+
+export const getStreams = async () =>
+    await streamAxios.get(`${streamUrl}/stream-info`).then((res) => res.data);
 
 export const leaveStream = () =>
-    streamAxios.post(`${streamUrl}/leave-stream`, { streamId: 1 })
-        .then(res => res.data);
+    streamAxios
+        .post(`${streamUrl}/leave-stream`, { streamId: 1 })
+        .then((res) => res.data);

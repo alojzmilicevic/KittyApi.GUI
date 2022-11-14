@@ -23,7 +23,7 @@ export class StreamerPeerConnection {
         const actualConn = this.pcs.find(x => x.from === user);
         actualConn?.pc.close();
         this.pcs = this.pcs.filter(x => x.from !== user);
-        const streamInfo = await getStreamInfo(1);
+        const streamInfo = await getStreamInfo("1");
         this.dispatch(setStreamInfo(streamInfo));
     }
 
@@ -47,7 +47,7 @@ export class StreamerPeerConnection {
         await pc.setLocalDescription(offer);
         await this.signaler.sendMessageToViewer(offer, user);
         this.pcs.push({ pc, from: user });
-        const streamInfo = await getStreamInfo(1);
+        const streamInfo = await getStreamInfo("1");
         this.dispatch(setStreamInfo(streamInfo));
     }
 

@@ -46,6 +46,7 @@ const Navigation = ({ user, logout, loading }: Props) => {
                         >
                             KittyIO
                         </Typography>
+                        <Button component={NavLink} to={'/streams'} sx={{ ml: 2 }}>Streams</Button>
                     </div>
                     <div style={{display: 'flex', alignItems: 'center'}}>
                         {user &&

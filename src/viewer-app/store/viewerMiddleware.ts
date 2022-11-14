@@ -1,40 +1,43 @@
-import { createAction } from "@reduxjs/toolkit";
-import ViewerConnectionHandler from "../peer-connection/ViewerConnectionHandler";
+import { createAction, PayloadAction } from '@reduxjs/toolkit';
+import ViewerConnectionHandler from '../peer-connection/ViewerConnectionHandler';
 import { logout } from '../../store/app';
 
 let client: ViewerConnectionHandler | null = null;
 
 const baseAction = 'viewer';
 
-export const viewerMiddleware = (store: any) => (next: any) => async (action: any) => {
-    switch (action.type) {
-        case init.type:
-            client = new ViewerConnectionHandler(store);
-            break;
+export const viewerMiddleware =
+    (store: any) => (next: any) => async (action: PayloadAction) => {
+        switch (action.type) {
+            case init.type:
+                const { streamId } = action.payload!;
 
-        case cleanup.type:
-            client?.cleanUpConnection();
-            client = null;
-            break;
+                client = new ViewerConnectionHandler(store, streamId);
+                break;
 
-        case leaveStream.type:
-            client?.leaveStream();
-            break;
+            case cleanup.type:
+                client?.cleanUpConnection();
+                client = null;
+                break;
 
-        case connectToStream.type:
-            client?.connectToStream();
-            break;
+            case leaveStream.type:
+                client?.leaveStream();
+                break;
 
-        case logout.type:
-            await client?.logout();
-            break;
-        default:
-    }
+            case connectToStream.type:
+                client?.connectToStream();
+                break;
 
-    return next(action);
-};
+            case logout.type:
+                await client?.logout();
+                break;
+            default:
+        }
 
-export const init = createAction(`${baseAction}/init`);
+        return next(action);
+    };
+
+export const init = createAction<{ streamId: string }>(`${baseAction}/init`);
 export const cleanup = createAction(`${baseAction}/cleanup`);
 export const connectToStream = createAction(`${baseAction}/leaveStream`);
 export const leaveStream = createAction(`${baseAction}/connectToStream`);

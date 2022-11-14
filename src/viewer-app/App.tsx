@@ -1,11 +1,11 @@
-import { useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { cleanup, init } from './store/viewerMiddleware';
 import { styled } from '@mui/material';
-import { ConnectMenu } from './ConnectMenu';
-import { ConnectionStatus, getConnectionStatus } from '../store/app';
-import { VideoContainer } from '../components/video/VideoContainer';
+import { useEffect } from 'react';
 import { useWindowSize } from 'usehooks-ts';
+import { VideoContainer } from '../components/video/VideoContainer';
+import { ConnectionStatus, getConnectionStatus } from '../store/app';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { ConnectMenu } from './ConnectMenu';
+import { cleanup, init } from './store/viewerMiddleware';
 
 const Container = styled('div')({
     flexGrow: 1,
@@ -16,17 +16,9 @@ const Container = styled('div')({
 });
 
 const App = () => {
-    const dispatch = useAppDispatch();
     const connectionStatus = useAppSelector(getConnectionStatus);
     const { width, height } = useWindowSize();
-    useEffect(() => {
-        dispatch(init());
-
-        return () => {
-            dispatch(cleanup());
-        };
-    }, [dispatch]);
-
+    
 
     return <Container>
         {connectionStatus !== ConnectionStatus.IDLE && <VideoContainer parentWidth={width} parentHeight={height} /> }
@@ -36,3 +28,4 @@ const App = () => {
 };
 
 export { App };
+
