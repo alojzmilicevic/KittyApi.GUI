@@ -19,7 +19,7 @@ const StreamCard = ({ stream }: Props) => {
     const navigate = useNavigate();
     return (
         <Card>
-            <CardActionArea onClick={() => { navigate(`${streamerUsername}`, { replace: true, state: stream }) }}>
+            <CardActionArea onClick={() => { navigate(`${streamerUsername}`) }}>
                 <CardMedia
                     component="img"
                     height="140"

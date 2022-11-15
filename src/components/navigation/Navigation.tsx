@@ -1,14 +1,13 @@
-import Box from '@mui/material/Box';
-import { AppBar, Button, IconButton, Skeleton, styled, Toolbar, Tooltip, Typography } from '@mui/material';
-import { NavLink } from 'react-router-dom';
-import { UserModel } from '../../user/UserModel';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import React from 'react';
-import { AppMenu } from './AppMenu';
 import VideocamIcon from '@mui/icons-material/Videocam';
+import { AppBar, Button, IconButton, Skeleton, styled, Toolbar, Tooltip, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
 import { grey } from '@mui/material/colors';
-import { CatIcon } from '../../assets/CatIcon';
 import Grid from '@mui/material/Unstable_Grid2';
+import { NavLink } from 'react-router-dom';
+import { CatIcon } from '../../assets/CatIcon';
+import { UserModel } from '../../user/UserModel';
+import { AppMenu } from './AppMenu';
 
 interface Props {
     user: UserModel | undefined;
@@ -18,23 +17,21 @@ interface Props {
 
 const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
 
-const SkeletonContainer = () => {
-    return <Grid container spacing={4}>
-        <Grid>
-            <Skeleton animation='wave' variant='circular' width={40} height={40} />
-        </Grid>
-        <Grid>
-            <Skeleton animation='wave' variant='circular' width={40} height={40} />
-        </Grid>
-    </Grid>;
-};
+const SkeletonContainer = () => <Grid container spacing={4}>
+    <Grid>
+        <Skeleton animation='wave' variant='circular' width={40} height={40} />
+    </Grid>
+    <Grid>
+        <Skeleton animation='wave' variant='circular' width={40} height={40} />
+    </Grid>
+</Grid>;
 
 const Navigation = ({ user, logout, loading }: Props) => {
     return (
         <Box>
             <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-                <Toolbar style={{display: 'flex', justifyContent: 'space-between'}}>
-                    <div style={{display: 'flex', alignItems: 'center'}}>
+                <Toolbar style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
                         <IconButton component={NavLink} to={'/'} disableRipple size={'small'}>
                             <CatIcon color={grey[500]} size={40} />
                         </IconButton>
@@ -48,7 +45,7 @@ const Navigation = ({ user, logout, loading }: Props) => {
                         </Typography>
                         <Button component={NavLink} to={'/streams'} sx={{ ml: 2 }}>Streams</Button>
                     </div>
-                    <div style={{display: 'flex', alignItems: 'center'}}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
                         {user &&
                             <Tooltip title={'Stream'}>
                                 <IconButton sx={{ color: grey[200] }} component={NavLink} to={'/streamer'}>
@@ -81,3 +78,4 @@ const Navigation = ({ user, logout, loading }: Props) => {
 };
 
 export { Navigation };
+

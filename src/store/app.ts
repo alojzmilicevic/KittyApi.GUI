@@ -1,6 +1,7 @@
 import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from './store';
 import { UserModel } from '../user/UserModel';
+import { SimpleErrorResponse } from '../errors/errorFactory';
 
 export type StreamInfo = {
     streamId: string;
@@ -15,10 +16,17 @@ export enum ConnectionStatus {
     CONNECTED,
 }
 
+type AppError = {
+    error: SimpleErrorResponse;
+    action: string;
+    label: string;
+};
+
 type State = {
     connectionStatus: ConnectionStatus;
     user?: UserModel;
     streamInfo?: StreamInfo;
+    appError?: AppError;
 };
 
 const initialState: State = {
@@ -53,6 +61,9 @@ export const app = createSlice({
                 state.streamInfo = undefined;
             }
         },
+        setError: (state, action: PayloadAction<AppError | undefined>) => {
+            state.appError = action.payload;
+        },
     },
 });
 
@@ -62,6 +73,9 @@ export const getStreamInfo = (state: RootState) => state.app.streamInfo;
 export const getConnectionStatus = (state: RootState) =>
     state.app.connectionStatus;
 
+export const getError = (state: RootState) => state.app.appError;
+
 // Action creators are generated for each case reducer function
-export const { setConnectionStatus, setUserInfo, setStreamInfo } = app.actions;
+export const { setConnectionStatus, setUserInfo, setStreamInfo, setError } =
+    app.actions;
 export const logout = createAction('app/logout');

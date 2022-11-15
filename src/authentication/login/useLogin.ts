@@ -10,23 +10,27 @@ interface IFormInput {
 }
 
 export function useLogin() {
-    const { control, handleSubmit, formState: { errors }, setError } = useForm<IFormInput>();
+    const {
+        control,
+        handleSubmit,
+        formState: { errors },
+        setError,
+    } = useForm<IFormInput>();
     const dispatch = useAppDispatch();
 
-    const onSubmit: SubmitHandler<IFormInput> = data => {
-        login(data.email, data.password).then(async (token: string) => {
-            if (token) {
-                localStorage.setItem('token', token);
-                const user = await getUserData();
-                dispatch(setUserInfo(user));
-            }
-        }).catch(e => {
-            const errorCode = e.response.data.errors;
-            setError('email', {
-                type: errorCode,
-                message: generateErrorMessage(errorCode)
+    const onSubmit: SubmitHandler<IFormInput> = (data) => {
+        login(data.email, data.password)
+            .then(async (token: string) => {
+                if (token) {
+                    localStorage.setItem('token', token);
+                    const user = await getUserData();
+                    dispatch(setUserInfo(user));
+                }
+            })
+            .catch((e) => {
+                const errorCode = e.response.data.errors;
+                setError('email', { ...generateErrorMessage(errorCode) });
             });
-        });
     };
 
     return { onSubmit, control, handleSubmit, errors };

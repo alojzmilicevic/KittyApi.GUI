@@ -1,5 +1,5 @@
 type ErrorType =
-    'User.NotFound'
+    | 'User.NotFound'
     | 'User.AlreadyExists'
     | 'User.AlreadyInStream'
     | 'Stream.NotFound'
@@ -20,9 +20,19 @@ export type ErrorResponse = {
     title: string;
     traceId: string;
     type: string;
-}
-export const generateErrorMessage = (errorCode: ErrorType) => {
-    if (errorCode in ErrorMap) return ErrorMap[errorCode];
+};
+
+export type SimpleErrorResponse = {
+    message: string;
+    type: string;
+};
+
+export const generateErrorMessage = (
+    errorCode: ErrorType
+): SimpleErrorResponse => {
+    if (errorCode in ErrorMap) {
+        return { message: ErrorMap[errorCode], type: errorCode };
+    }
 
     throw new Error(`Error code ${errorCode} not found`);
 };

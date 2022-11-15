@@ -1,19 +1,32 @@
-import { MessageTypes } from "../../signaling/constants";
-import { EnhancedStore } from "@reduxjs/toolkit";
-import { AppDispatch } from "../../store/store";
-import { SignalingChannel } from "../../signaling/SignalingChannel";
-import { IceServerConfig } from "../../peer-connection/constants";
-import { onIceConnectionStateChange, setLocalVideo } from '../../peer-connection/util';
-import { ConnectionStatus, getUser, setConnectionStatus, setStreamInfo } from '../../store/app';
-import * as StreamApi from "../api/stream";
+import { MessageTypes } from '../../signaling/constants';
+import { EnhancedStore } from '@reduxjs/toolkit';
+import { AppDispatch } from '../../store/store';
+import { SignalingChannel } from '../../signaling/SignalingChannel';
+import { IceServerConfig } from '../../peer-connection/constants';
+import {
+    onIceConnectionStateChange,
+    setLocalVideo,
+} from '../../peer-connection/util';
+import {
+    ConnectionStatus,
+    getUser,
+    setConnectionStatus,
+    setStreamInfo,
+    getStreamInfo as getStreamInfoSelector,
+} from '../../store/app';
+import * as StreamApi from '../api/stream';
 
 export class ViewerPeerConnection {
-    peer: { from: string, pc: RTCPeerConnection } | null = null;
+    peer: { from: string; pc: RTCPeerConnection } | null = null;
     store: EnhancedStore;
     dispatch: AppDispatch;
     signaler: SignalingChannel;
 
-    constructor(store: EnhancedStore, dispatch: AppDispatch, signaler: SignalingChannel) {
+    constructor(
+        store: EnhancedStore,
+        dispatch: AppDispatch,
+        signaler: SignalingChannel
+    ) {
         this.store = store;
         this.dispatch = dispatch;
         this.signaler = signaler;
@@ -25,14 +38,23 @@ export class ViewerPeerConnection {
         setLocalVideo(null);
         this.peer.pc.close();
         this.peer = null;
-        const streamInfo = await StreamApi.leaveStream();
-        this.dispatch(setConnectionStatus({connectionStatus: ConnectionStatus.IDLE}));
+        const s = getStreamInfoSelector(this.store.getState());
+
+        const streamInfo = await StreamApi.leaveStream(s?.streamId!);
+
+        this.dispatch(
+            setConnectionStatus({ connectionStatus: ConnectionStatus.IDLE })
+        );
         this.dispatch(setStreamInfo(streamInfo));
     };
 
     async connectToStream(streamId: string) {
         if (this.peer) return;
-        this.dispatch(setConnectionStatus({ connectionStatus: ConnectionStatus.CONNECTING }));
+        this.dispatch(
+            setConnectionStatus({
+                connectionStatus: ConnectionStatus.CONNECTING,
+            })
+        );
 
         const pc = new RTCPeerConnection(IceServerConfig);
         const user = getUser(this.store.getState())!;
@@ -42,14 +64,18 @@ export class ViewerPeerConnection {
 
         pc.onconnectionstatechange = () => {
             switch (pc.connectionState) {
-                case "connecting":
+                case 'connecting':
                     break;
 
-                case "connected":
-                    this.dispatch(setConnectionStatus({ connectionStatus: ConnectionStatus.CONNECTED }));
+                case 'connected':
+                    this.dispatch(
+                        setConnectionStatus({
+                            connectionStatus: ConnectionStatus.CONNECTED,
+                        })
+                    );
                     break;
             }
-        }
+        };
         pc.ontrack = (ev: RTCTrackEvent) => setLocalVideo(ev.streams[0]);
 
         await StreamApi.joinStream(streamId);
@@ -66,7 +92,10 @@ export class ViewerPeerConnection {
         await pc.setLocalDescription(answer);
         const user = getUser(this.store.getState())!;
 
-        await this.signaler.sendMessageToStreamer({ type: MessageTypes.ANSWER, payload: answer }, user.userId);
+        await this.signaler.sendMessageToStreamer(
+            { type: MessageTypes.ANSWER, payload: answer },
+            user.userId
+        );
     }
 
     async onIceCandidate(iceCandidate: any) {

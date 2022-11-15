@@ -1,16 +1,17 @@
 import { EnhancedStore } from '@reduxjs/toolkit';
-import { AppDispatch } from '../../store/store';
-import { SignalingChannel } from '../../signaling/SignalingChannel';
+import { SimpleErrorResponse } from '../../errors/errorFactory';
 import { ClientType, Message, MessageTypes } from '../../signaling/constants';
-import { ViewerPeerConnection } from './ViewerPeerConnection';
-import { getStreamInfo } from '../api/stream';
+import { SignalingChannel } from '../../signaling/SignalingChannel';
 import {
     ConnectionStatus,
     getConnectionStatus,
+    setError,
     setStreamInfo,
+    getStreamInfo as getStreamInfoSelector,
 } from '../../store/app';
-import { AxiosError } from 'axios';
-import { ErrorResponse } from '../../errors/errorFactory';
+import { AppDispatch } from '../../store/store';
+import { getStreamInfo } from '../api/stream';
+import { ViewerPeerConnection } from './ViewerPeerConnection';
 
 export default class ViewerConnectionHandler {
     store: EnhancedStore;
@@ -34,17 +35,23 @@ export default class ViewerConnectionHandler {
             this.signaling
         );
 
-        this.init(streamId);
+        this.getStreamInfo();
     }
 
-    async init(streamId: string) {
+    async getStreamInfo() {
         try {
-            const streamInfo = await getStreamInfo(streamId);
+            const streamInfo = await getStreamInfo(this.streamId);
             this.dispatch(setStreamInfo(streamInfo));
         } catch (e: unknown) {
-            if (e instanceof AxiosError<ErrorResponse>) {
-                console.log(e.response?.data);
-            }
+            let error = e as SimpleErrorResponse;
+
+            this.dispatch(
+                setError({
+                    error,
+                    action: '/streams',
+                    label: 'Return to streams overview',
+                })
+            );
         }
     }
 
@@ -53,11 +60,18 @@ export default class ViewerConnectionHandler {
     }
 
     async connectToStream() {
-        this.signaling && (await this.signaling.init());
-        await this.viewerPeerConnection.connectToStream(this.streamId);
+        if (this.signaling) {
+            await this.signaling.init();
+            const s = getStreamInfoSelector(this.store.getState());
+            await this.viewerPeerConnection.connectToStream(s?.streamId!);
+        } else {
+            console.log('Error when connecting to stream, signaling is null');
+            //TODO set error here
+        }
     }
 
     async leaveStream() {
+
         await this.signaling?.cleanUpConnection();
         await this.viewerPeerConnection.leaveStream();
     }
@@ -70,7 +84,7 @@ export default class ViewerConnectionHandler {
     }
 
     onSocketMessage = async (user: string, message: Message) => {
-        console.log(`got ${message.type} from ${user}`)
+        //console.log(`got ${message.type} from ${user}`);
         switch (message.type) {
             case MessageTypes.CALL:
                 await this.connectToStream();

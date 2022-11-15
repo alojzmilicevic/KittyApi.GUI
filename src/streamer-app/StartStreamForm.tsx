@@ -1,9 +1,9 @@
-import { VideoCameraFront } from "@mui/icons-material"
-import { Box, Button, FormHelperText, Grid, InputLabel, MenuItem, Select, Typography } from "@mui/material"
+import { VideoCameraFront } from "@mui/icons-material";
+import { Button, FormHelperText, Grid, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form";
 import { resourcesUrl } from "../authentication/authentication";
-import { CssTextField } from "../authentication/login/LoginForm"
+import { CssTextField } from "../authentication/login/LoginForm";
 import { useAppDispatch } from "../store/hooks";
 import { Thumbnail } from "../viewer-app/streams/Streams";
 import { StartStreamInput } from "./App";
@@ -26,11 +26,11 @@ const StartStreamForm = () => {
     const dispatch = useAppDispatch();
     const [thumbnails, setThumbnails] = useState<Thumbnail[]>([]);
     const { control, handleSubmit, formState: { errors }, getValues } = useForm<StartStreamInput>({
-        mode: 'onChange', defaultValues: { title: '', thumbnail: -1 }
+        mode: 'onChange', defaultValues: { title: '', thumbnail: '' }
     });
 
     useEffect(() => {
-        getThumbnailData().then((data: Thumbnail[]) => setThumbnails([{ thumbnailName: 'None', thumbnailPath: 'None', thumbnailId: -1 }, ...data]));
+        getThumbnailData().then((data: Thumbnail[]) => setThumbnails([{ thumbnailName: 'None', thumbnailPath: 'None', thumbnailId: '' }, ...data]));
     }, [dispatch]);
 
 
@@ -38,7 +38,7 @@ const StartStreamForm = () => {
         dispatch(startStream(formInput));
     }
 
-    return <Grid xs={12} container component='form' onSubmit={handleSubmit((onSubmit))} sx={{ mt: 1 }} display={'flex'} flexDirection={'column'}>
+    return <Grid container component='form' onSubmit={handleSubmit((onSubmit))} sx={{ mt: 1 }} display={'flex'} flexDirection={'column'}>
         <Typography variant='h5'>Start Stream</Typography>
 
         <Controller
@@ -65,7 +65,7 @@ const StartStreamForm = () => {
             rules={{
                 validate: (value) => {
                     setThumbnails([...thumbnails]);
-                    return value !== -1 || 'Please select a thumbnail';
+                    return value !== '' || 'Please select a thumbnail';
                 }
             }}
             render={({ field }) => <div style={{ display: 'flex', alignItems: 'flex-end' }}>
@@ -80,9 +80,10 @@ const StartStreamForm = () => {
 
                     error={!!errors.thumbnail}
                 >
-                    {thumbnails.map((thumbnail: Thumbnail) => <MenuItem value={thumbnail.thumbnailId}>{thumbnail.thumbnailName}</MenuItem>)}
+                    {thumbnails.map((thumbnail: Thumbnail, index: number) =>
+                        <MenuItem key={index} value={thumbnail.thumbnailId}>{thumbnail.thumbnailName}</MenuItem>)}
                 </Select>
-                {thumbnails.length > 0 && getValues('thumbnail') !== -1 && <img style={{ width: 100, height: 80 }} src={`${resourcesUrl}${thumbnails[getValues('thumbnail')].thumbnailPath}`} alt='thumbnail' />}
+                {thumbnails.length > 0 && getValues('thumbnail') !== '' && <img style={{ width: 100, height: 80 }} src={`${resourcesUrl}${thumbnails[parseInt(getValues('thumbnail'))].thumbnailPath}`} alt='thumbnail' />}
 
             </div>
             }

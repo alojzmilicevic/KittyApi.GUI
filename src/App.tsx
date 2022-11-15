@@ -1,8 +1,9 @@
-import { styled, Typography } from '@mui/material';
+import { styled } from '@mui/material';
 import { Navigate, Outlet, Route, Routes } from 'react-router-dom';
 import { Login } from './authentication/login/LoginForm';
 import { LoadingSpinner } from './components/LoadingSpinner';
 import { Navigation } from './components/navigation/Navigation';
+import { ErrorView } from './errors/ErrorView';
 import './index.css';
 import { ProfilePage } from './profile-page/ProfilePage';
 import { App as StreamerApp } from './streamer-app/App';
@@ -40,29 +41,33 @@ const RedirectRoute = ({ user, redirectPath = '/' }: ProtectedRouteProps) => {
 };
 
 function App() {
-    const { user, ready, logout } = useApp();
+    const { user, ready, logout, error } = useApp();
+
 
     return (
-        <MainContainer>
-            <Navigation loading={!ready} user={user} logout={logout} />
-            <LoadingSpinner />
-            {ready && (
-                <Routes>
-                    <Route element={<ProtectedRoute user={user} />}>
-                        <Route element={<StreamerApp />} path={'/streamer'} />
-                        <Route element={<ProfilePage />} path={'/profile'} />
-                        <Route element={<ViewerApp />} path={'/'} />
-                        <Route element={<Streams />} path={'/streams'}></Route>
-                        <Route element={<Stream />} path={'/streams/:stream'} />
+        <>
+            <ErrorView />
+            <MainContainer>
+                <Navigation loading={!ready} user={user} logout={logout} />
+                <LoadingSpinner />
+                {ready && !error && (
+                    <Routes>
+                        <Route element={<ProtectedRoute user={user} />}>
+                            <Route element={<StreamerApp />} path={'/streamer'} />
+                            <Route element={<ProfilePage />} path={'/profile'} />
+                            <Route element={<ViewerApp />} path={'/'} />
+                            <Route element={<Streams />} path={'/streams'}></Route>
+                            <Route element={<Stream />} path={'/streams/:stream'} />
 
-                    </Route>
-                    <Route element={<RedirectRoute user={user} />}>
-                        <Route element={<Login />} path={'/login'} />
-                        <Route element={<Navigate to={'login'} />} path={'*'} />
-                    </Route>
-                </Routes>
-            )}
-        </MainContainer>
+                        </Route>
+                        <Route element={<RedirectRoute user={user} />}>
+                            <Route element={<Login />} path={'/login'} />
+                            <Route element={<Navigate to={'login'} />} path={'*'} />
+                        </Route>
+                    </Routes>
+                )}
+            </MainContainer>
+        </>
     );
 }
 

@@ -23,38 +23,29 @@ streamerApi.interceptors.request.use(
     }
 );
 
-export const getThumbnailData: () => Promise<Thumbnail[]> = () => {
-    return streamerApi
+export const getThumbnailData: () => Promise<Thumbnail[]> = () =>
+    streamerApi
         .get<Thumbnail[]>(`${appUrl}/resources/stream-thumbnails`)
         .then((res: AxiosResponse<Thumbnail[]>) => res.data)
         .catch((e) => {
             throw new Error(e);
         });
-};
 
-export const startStream = (streamTitle: string, thumbnailId: number) => {
-    return streamerApi
+export const startStream = (streamTitle: string, thumbnailId: string) =>
+    streamerApi
         .post(`${appUrl}/stream/start-stream`, {
             streamTitle,
             thumbnailId,
         })
-        .then((res: AxiosResponse) => {
-            console.log(res);
-
-            return res.data;
-        })
+        .then((res: AxiosResponse) => res.data)
         .catch((e) => {
             throw new Error(e);
         });
-};
 
 export const endStream = (streamId: string) => {
     return streamerApi
         .post(`${appUrl}/stream/end-stream/${streamId}`)
-        .then((res: AxiosResponse) => {
-            console.log(res);
-            return res.data;
-        })
+        .then((res: AxiosResponse) => res.data)
         .catch((e) => {
             throw new Error(e);
         });

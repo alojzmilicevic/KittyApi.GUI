@@ -4,11 +4,14 @@ import { SignalingChannel } from '../../signaling/SignalingChannel';
 import { ClientType, Message, MessageTypes } from '../../signaling/constants';
 import { StreamerPeerConnection } from './StreamerPeerConnection';
 import { MediaConstraints } from '../../peer-connection/constants';
+import * as StreamService from '../../viewer-app/api/stream';
+
 import {
     ConnectionStatus,
     setConnectionStatus,
     setStreamInfo,
     getStreamInfo,
+    getUser,
 } from '../../store/app';
 import { setLocalVideo } from '../../peer-connection/util';
 import { StartStreamInput } from '../App';
@@ -64,8 +67,6 @@ export default class StreamerConnectionHandler {
                 })
             );
         } catch (error) {
-            console.log(error);
-
             setConnectionStatus({
                 connectionStatus: ConnectionStatus.IDLE,
             });
@@ -92,7 +93,7 @@ export default class StreamerConnectionHandler {
                 this.dispatch(setStreamInfo(undefined));
             }
         } catch (error) {
-            console.log(error);
+            //console.log(error);
         }
     }
 
@@ -108,13 +109,17 @@ export default class StreamerConnectionHandler {
     logout() {}
 
     onSocketMessage = async (user: string, message: Message) => {
-        console.log(`got ${message.type} from ${user}`)
+        //console.log(`got ${message.type} from ${user}`);
         switch (message.type) {
             case MessageTypes.INCOMING_CALL:
                 await this.streamerPeerConnection.onIncomingCall(
                     user,
                     this.stream!
                 );
+
+                const streamId = getUser(this.store.getState())?.username;
+                const streamInfo = await StreamService.getStreamInfo(streamId!);
+                this.dispatch(setStreamInfo(streamInfo));
                 break;
             case MessageTypes.ANSWER:
                 await this.streamerPeerConnection.onAnswer(

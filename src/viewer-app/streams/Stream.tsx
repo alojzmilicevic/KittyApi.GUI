@@ -1,12 +1,11 @@
-import { styled } from "@mui/material";
+import { Button, styled } from "@mui/material";
 import { useEffect } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useWindowSize } from "usehooks-ts";
 import { VideoContainer } from "../../components/video/VideoContainer";
 import { ConnectionStatus, getConnectionStatus, getStreamInfo } from "../../store/app";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { cleanup, connectToStream, init } from "../store/viewerMiddleware";
-import { Stream as StreamType } from "./Streams";
+import { cleanup, connectToStream, init, leaveStream } from "../store/viewerMiddleware";
 
 const Container = styled('div')({
     flexGrow: 1,
@@ -18,31 +17,46 @@ const Container = styled('div')({
 
 
 const Stream = () => {
+    const { width, height } = useWindowSize();
     const params = useParams();
     const dispatch = useAppDispatch();
-    const { width, height } = useWindowSize();
+    const navigate = useNavigate();
 
     const connectionStatus = useAppSelector(getConnectionStatus);
-
     const streamInfo = useAppSelector(getStreamInfo);
+
     const { stream } = params as { stream: string };
     useEffect(() => {
-        if (params.stream) {
-            dispatch(init({ streamId: stream }));
-            dispatch(connectToStream());
-
-        }
+        dispatch(init({ streamId: stream }));
 
         return () => {
             dispatch(cleanup());
         }
-    }, [dispatch, params, stream]);
+    }, [dispatch, stream]);
 
+
+    useEffect(() => {
+        if (streamInfo) {
+            dispatch(connectToStream());
+        }
+    }, [dispatch, streamInfo]);
 
 
     return (
         <Container>
             {connectionStatus !== ConnectionStatus.IDLE && <VideoContainer parentWidth={width} parentHeight={height} />}
+            {connectionStatus === ConnectionStatus.CONNECTED &&
+                <Button
+                    sx={{ textTransform: 'none' }}
+                    variant={'contained'}
+                    onClick={() => {
+                        navigate('/streams');
+                        return dispatch(leaveStream());
+                    }}
+                >
+                    Leave Stream
+                </Button>
+            }
         </Container>
     );
 }

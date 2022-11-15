@@ -11,7 +11,6 @@ export const viewerMiddleware =
         switch (action.type) {
             case init.type:
                 const { streamId } = action.payload!;
-
                 client = new ViewerConnectionHandler(store, streamId);
                 break;
 

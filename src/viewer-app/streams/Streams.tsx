@@ -4,7 +4,7 @@ import { getStreams } from '../api/stream';
 import { StreamCard } from './StreamCard';
 
 export interface Thumbnail {
-    thumbnailId: number;
+    thumbnailId: string;
     thumbnailName: string;
     thumbnailPath: string;
 }

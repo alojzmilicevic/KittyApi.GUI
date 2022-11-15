@@ -2,12 +2,13 @@ import { useCallback, useEffect, useState } from "react";
 import { UserModel } from "./user/UserModel";
 import { getUserData } from "./authentication/authentication";
 import { useAppDispatch, useAppSelector } from './store/hooks';
-import { getUser, logout as logoutAction, setUserInfo } from './store/app';
+import { getUser, logout as logoutAction, setUserInfo, getError } from './store/app';
 
 export function useApp() {
     const [ready, setReady] = useState(false);
     const dispatch = useAppDispatch();
     const user = useAppSelector(getUser);
+    const error = useAppSelector(getError);
 
     const logout = useCallback(() => {
         dispatch(logoutAction())
@@ -30,5 +31,5 @@ export function useApp() {
         fetchUser();
     }, [fetchUser]);
 
-    return { user, ready, logout };
+    return { user, ready, logout, error };
 }

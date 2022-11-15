@@ -1,5 +1,5 @@
 import { Stop } from '@mui/icons-material';
-import { Button, styled, useMediaQuery, useTheme } from '@mui/material';
+import { Button, useMediaQuery, useTheme } from '@mui/material';
 import { default as Grid } from '@mui/material/Unstable_Grid2';
 import { useEffect } from 'react';
 import { ChatDrawer } from '../components/chat-drawer/ChatDrawer';
@@ -12,7 +12,7 @@ import { cleanup, endStream, init } from './store/streamerMiddleware';
 
 export interface StartStreamInput {
     title: string;
-    thumbnail: number;
+    thumbnail: string;
 }
 
 const StreamSettings = () => {
