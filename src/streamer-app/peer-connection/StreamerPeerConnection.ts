@@ -4,8 +4,8 @@ import { SignalingChannel } from '../../signaling/SignalingChannel';
 import { MessageTypes } from '../../signaling/constants';
 import { IceServerConfig } from '../../peer-connection/constants';
 import { onIceConnectionStateChange } from '../../peer-connection/util';
-import { getStreamInfo } from '../../viewer-app/api/stream';
 import { getUser, setStreamInfo } from '../../store/app';
+import * as StreamService from '../../services/streamService';
 
 export class StreamerPeerConnection {
     pcs: { from: string; pc: RTCPeerConnection }[] = [];
@@ -29,7 +29,7 @@ export class StreamerPeerConnection {
         this.pcs = this.pcs.filter((x) => x.from !== user);
 
         const streamId = getUser(this.store.getState())?.username;
-        const streamInfo = await getStreamInfo(streamId!);
+        const streamInfo = await StreamService.getStreamInfo(streamId!);
         this.dispatch(setStreamInfo(streamInfo));
     }
 

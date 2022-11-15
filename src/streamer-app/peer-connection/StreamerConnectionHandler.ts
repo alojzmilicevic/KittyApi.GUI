@@ -4,7 +4,7 @@ import { SignalingChannel } from '../../signaling/SignalingChannel';
 import { ClientType, Message, MessageTypes } from '../../signaling/constants';
 import { StreamerPeerConnection } from './StreamerPeerConnection';
 import { MediaConstraints } from '../../peer-connection/constants';
-import * as StreamService from '../../viewer-app/api/stream';
+import * as StreamService from '../../services/streamService';
 
 import {
     ConnectionStatus,

@@ -1,30 +1,10 @@
 import axios, { AxiosResponse } from 'axios';
+import { appAxios } from '../services/serviceMiddleware';
 import { UserModel } from '../user/UserModel';
 
-const firstUrl = 'https://localhost:7076';
-export const appUrl = `${firstUrl || process.env.REACT_APP_SERVER_URL}/api`;
-export const resourcesUrl = `${firstUrl || process.env.REACT_APP_SERVER_URL}`;
-
-const userDataAxios = axios.create();
-
-userDataAxios.interceptors.request.use(
-    (req) => {
-        const token = localStorage.getItem('token');
-
-        const controller = new AbortController();
-        if (!token) {
-            controller.abort();
-        }
-        return {
-            ...req,
-            signal: controller.signal,
-            headers: { authorization: `Bearer ${token}` },
-        };
-    },
-    (error) => {
-        return Promise.reject(error);
-    }
-);
+const baseUrl = 'https://localhost:7076';
+export const appUrl = `${baseUrl || process.env.REACT_APP_SERVER_URL}/api`;
+export const resourcesUrl = `${baseUrl || process.env.REACT_APP_SERVER_URL}`;
 
 export const login = async (email: string | null, password: string | null) => {
     const response = await axios.post<string>(`${appUrl}/auth/login`, {
@@ -38,7 +18,7 @@ export const login = async (email: string | null, password: string | null) => {
 export const getUserData: () => Promise<UserModel> = () => {
     const token = localStorage.getItem('token');
 
-    return userDataAxios
+    return appAxios
         .get<UserModel>(`${appUrl}/user`, {
             headers: {
                 Authorization: 'Bearer ' + token,
@@ -51,7 +31,7 @@ export const getUserData: () => Promise<UserModel> = () => {
 };
 
 export const changeUserName = (username: string) =>
-    userDataAxios
+    appAxios
         .post<{ user: UserModel; token: string }>(
             `${appUrl}/user/change-username?username=${username}`
         )
@@ -63,6 +43,6 @@ export const changeUserName = (username: string) =>
         });
 
 export const checkUsername = (username: string) =>
-    userDataAxios.get(`${appUrl}/user/check-username`, {
+    appAxios.get(`${appUrl}/user/check-username`, {
         params: { username },
     });

@@ -1,33 +1,11 @@
-import axios, { AxiosError } from 'axios';
-import { appUrl } from '../../authentication/authentication';
+import { AxiosError } from 'axios';
 import { ErrorResponse, generateErrorMessage } from '../../errors/errorFactory';
 import { ServerError } from '../../errors/serverError';
-
-const streamUrl = `${appUrl}/stream`;
-
-const streamAxios = axios.create();
-
-streamAxios.interceptors.request.use(
-    (req) => {
-        const token = localStorage.getItem('token');
-
-        const controller = new AbortController();
-        if (!token) {
-            controller.abort();
-        }
-        return {
-            ...req,
-            signal: controller.signal,
-            headers: { ...req.headers, Authorization: `Bearer ${token}` },
-        };
-    },
-    (error) => {
-        return Promise.reject(error);
-    }
-);
+import { appAxios } from '../../services/serviceMiddleware';
+import { streamUrl } from '../../services/streamService';
 
 export const joinStream = async (streamId: string) =>
-    streamAxios
+    appAxios
         .post<string>(`${streamUrl}/join-stream/${streamId}`)
         .then((res) => res.data)
         .catch((e: AxiosError<ErrorResponse>) => {
@@ -36,20 +14,10 @@ export const joinStream = async (streamId: string) =>
             });
         });
 
-export const getStreamInfo = async (streamId: string) =>
-    await streamAxios
-        .get(`${streamUrl}/stream-info/${streamId}`)
-        .then((res) => res.data)
-        .catch((e: AxiosError<ErrorResponse>) => {
-            throw new ServerError({
-                ...generateErrorMessage(e.response!.data.errors),
-            });
-        });
-
 export const getStreams = async () =>
-    await streamAxios.get(`${streamUrl}/stream-info`).then((res) => res.data);
+    await appAxios.get(`${streamUrl}/stream-info`).then((res) => res.data);
 
 export const leaveStream = (streamId: string) =>
-    streamAxios
+    appAxios
         .post(`${streamUrl}/leave-stream/${streamId}`)
         .then((res) => res.data);

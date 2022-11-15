@@ -10,7 +10,8 @@ import {
     getStreamInfo as getStreamInfoSelector,
 } from '../../store/app';
 import { AppDispatch } from '../../store/store';
-import { getStreamInfo } from '../api/stream';
+import * as StreamService from '../../services/streamService';
+
 import { ViewerPeerConnection } from './ViewerPeerConnection';
 
 export default class ViewerConnectionHandler {
@@ -40,7 +41,7 @@ export default class ViewerConnectionHandler {
 
     async getStreamInfo() {
         try {
-            const streamInfo = await getStreamInfo(this.streamId);
+            const streamInfo = await StreamService.getStreamInfo(this.streamId);
             this.dispatch(setStreamInfo(streamInfo));
         } catch (e: unknown) {
             let error = e as SimpleErrorResponse;
@@ -71,7 +72,6 @@ export default class ViewerConnectionHandler {
     }
 
     async leaveStream() {
-
         await this.signaling?.cleanUpConnection();
         await this.viewerPeerConnection.leaveStream();
     }
