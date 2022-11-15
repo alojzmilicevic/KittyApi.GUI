@@ -1,24 +1,17 @@
-import React from 'react';
+import { Logout } from '@mui/icons-material';
 import { Divider, IconButton, ListItemIcon, Menu, MenuItem } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
-import { Logout } from '@mui/icons-material';
+import React from 'react';
 import { NavLink } from 'react-router-dom';
-import Box from '@mui/material/Box';
-import { useAppSelector } from '../../store/hooks';
 import { getUser } from '../../store/app';
+import { useAppSelector } from '../../store/hooks';
 
-function stringAvatar(name: string) {
-    return {
-        sx: {
-            fontSize: 16
-        },
-        children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`
-    };
-}
-
-type AppMenuProps = {
-    logout: () => void,
-}
+const stringAvatar = (name: string) => ({
+    sx: {
+        fontSize: 16
+    },
+    children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`
+});
 
 const paperProps = {
     elevation: 0,
@@ -55,7 +48,7 @@ type MenuOption = {
     showBottomBorder?: boolean
 }
 
-function useAppMenu(logout: () => void) {
+function useNavMenu(logout: () => void) {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
     const user = useAppSelector(getUser);
@@ -76,19 +69,18 @@ function useAppMenu(logout: () => void) {
     return { anchorEl, open, handleClose, handleClick, menuOptions, user };
 }
 
-const AppMenu = ({ logout }: AppMenuProps) => {
-    const { anchorEl, open, handleClose, handleClick, menuOptions, user } = useAppMenu(logout);
+type NavMenuProps = {
+    logout: () => void,
+}
+
+const NavMenu = ({ logout }: NavMenuProps) => {
+    const { anchorEl, open, handleClose, handleClick, menuOptions, user } = useNavMenu(logout);
 
     return (
         <>
-            <Box sx={{ flexGrow: 0 }}>
-                <IconButton
-                    onClick={handleClick}
-                    sx={{ ml: 2 }}
-                >
-                    <Avatar {...stringAvatar(`${user?.firstName} ${user?.lastName}`)} />
-                </IconButton>
-            </Box>
+            <IconButton onClick={handleClick}>
+                <Avatar {...stringAvatar(`${user?.firstName} ${user?.lastName}`)} />
+            </IconButton>
             <Menu
                 anchorEl={anchorEl}
                 id='account-menu'
@@ -101,18 +93,19 @@ const AppMenu = ({ logout }: AppMenuProps) => {
             >
 
                 {menuOptions.map((option: MenuOption, i) => <div key={`menu option ${i}`}>
-                        <MenuItem component={NavLink} to={option.path} onClick={option.onClick}>
-                            <ListItemIcon>
-                                {option.icon}
-                            </ListItemIcon>
-                            {option.text}
-                        </MenuItem>
-                        {option.showBottomBorder && <Divider />}
-                    </div>
+                    <MenuItem component={NavLink} to={option.path} onClick={option.onClick}>
+                        <ListItemIcon>
+                            {option.icon}
+                        </ListItemIcon>
+                        {option.text}
+                    </MenuItem>
+                    {option.showBottomBorder && <Divider />}
+                </div>
                 )}
             </Menu>
         </>
     );
 };
 
-export { AppMenu };
+export { NavMenu };
+

@@ -18,14 +18,8 @@ export const login = async (email: string | null, password: string | null) =>
         });
 
 export const getUserData: () => Promise<UserModel> = () => {
-    const token = localStorage.getItem('token');
-
     return appAxios
-        .get<UserModel>(`${appUrl}/user`, {
-            headers: {
-                Authorization: 'Bearer ' + token,
-            },
-        })
+        .get<UserModel>(`${appUrl}/user`)
         .then((res: AxiosResponse<UserModel>) => res.data)
         .catch((e) => {
             throw new Error(e);
