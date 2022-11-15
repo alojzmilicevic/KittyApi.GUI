@@ -1,5 +1,5 @@
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { getUserData, login } from '../authentication';
+import { getUserData, login } from '../service/authentication-service';
 import { useAppDispatch } from '../../store/hooks';
 import { setUserInfo } from '../../store/app';
 import { generateErrorMessage } from '../../errors/errorFactory';

@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { getUser, setUserInfo } from '../store/app';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { changeUserName, checkUsername } from '../authentication/authentication';
+import { changeUserName, checkUsername } from '../authentication/service/authentication-service';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useState } from 'react';

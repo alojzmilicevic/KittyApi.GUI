@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { UserModel } from "./user/UserModel";
-import { getUserData } from "./authentication/authentication";
+import { getUserData } from "./authentication/service/authentication-service";
 import { useAppDispatch, useAppSelector } from './store/hooks';
 import { getUser, logout as logoutAction, setUserInfo, getError } from './store/app';
 

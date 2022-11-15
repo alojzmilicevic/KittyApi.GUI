@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import { appUrl } from '../authentication/authentication';
+import { appUrl } from '../authentication/service/authentication-service';
 import { ErrorResponse, generateErrorMessage } from '../errors/errorFactory';
 import { ServerError } from '../errors/serverError';
 import { appAxios } from './serviceMiddleware';

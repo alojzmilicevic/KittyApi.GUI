@@ -2,8 +2,8 @@ import { VideoCameraFront } from "@mui/icons-material";
 import { Button, FormHelperText, Grid, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { resourcesUrl } from "../authentication/authentication";
-import { CssTextField } from "../authentication/login/LoginForm";
+import { resourcesUrl } from "../authentication/service/authentication-service";
+import { StyledTextField } from "../components/StyledTextField";
 import { useAppDispatch } from "../store/hooks";
 import { Thumbnail } from "../viewer-app/streams/Streams";
 import { StartStreamInput } from "./App";
@@ -46,7 +46,7 @@ const StartStreamForm = () => {
             control={control}
             defaultValue=''
             rules={{ required: 'This field is required' }}
-            render={({ field }) => <CssTextField
+            render={({ field }) => <StyledTextField
                 margin='normal'
                 fullWidth
                 id='title'

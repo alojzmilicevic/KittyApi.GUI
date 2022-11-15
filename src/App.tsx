@@ -1,6 +1,6 @@
 import { styled } from '@mui/material';
 import { Navigate, Outlet, Route, Routes } from 'react-router-dom';
-import { Login } from './authentication/login/LoginForm';
+import { Login } from './authentication/module/LoginForm';
 import { LoadingSpinner } from './components/LoadingSpinner';
 import { Navigation } from './components/navigation/Navigation';
 import { ErrorView } from './errors/ErrorView';

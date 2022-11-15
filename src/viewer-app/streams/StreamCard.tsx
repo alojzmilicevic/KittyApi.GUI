@@ -7,7 +7,7 @@ import {
     Typography,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { resourcesUrl } from '../../authentication/authentication';
+import { resourcesUrl } from '../../authentication/service/authentication-service';
 import { Stream } from './Streams';
 
 interface Props {

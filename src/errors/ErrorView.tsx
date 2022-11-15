@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { Button, Typography, useTheme } from "@mui/material";
 import { useCallback, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { resourcesUrl } from "../authentication/authentication";
+import { resourcesUrl } from "../authentication/service/authentication-service";
 import { getError, setError } from "../store/app";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 
