@@ -1,21 +1,20 @@
 import { EnhancedStore } from '@reduxjs/toolkit';
-import { AppDispatch } from '../../store/store';
-import { SignalingChannel } from '../../signaling/SignalingChannel';
-import { ClientType, Message, MessageTypes } from '../../signaling/constants';
-import { StreamerPeerConnection } from './StreamerPeerConnection';
 import { MediaConstraints } from '../../peer-connection/constants';
+import { setLocalVideo } from '../../peer-connection/util';
 import * as StreamService from '../../services/streamService';
-
+import { ClientType, Message, MessageTypes } from '../../signaling/constants';
+import { SignalingChannel } from '../../signaling/signalingChannel';
 import {
     ConnectionStatus,
-    setConnectionStatus,
-    setStreamInfo,
     getStreamInfo,
     getUser,
+    setConnectionStatus,
+    setStreamInfo,
 } from '../../store/app';
-import { setLocalVideo } from '../../peer-connection/util';
-import { StartStreamInput } from '../App';
-import * as StreamerApi from '../streamer.api';
+import { AppDispatch } from '../../store/store';
+import { StartStreamInput } from '../interface';
+import * as StreamerApi from '../service/streamerService';
+import { StreamerPeerConnection } from './streamerPeerConnection';
 
 export default class StreamerConnectionHandler {
     store: EnhancedStore;

@@ -1,6 +1,6 @@
 import { styled } from '@mui/material';
 import { useWindowSize } from 'usehooks-ts';
-import { VideoContainer } from '../components/video/VideoContainer';
+import { VideoContainer } from '../video/VideoContainer';
 import { ConnectionStatus, getConnectionStatus } from '../store/app';
 import { useAppSelector } from '../store/hooks';
 import { ConnectMenu } from './ConnectMenu';

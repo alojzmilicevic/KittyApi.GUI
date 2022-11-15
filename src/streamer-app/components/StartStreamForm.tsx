@@ -2,13 +2,13 @@ import { VideoCameraFront } from "@mui/icons-material";
 import { Button, FormHelperText, Grid, InputLabel, MenuItem, Select, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { resourcesUrl } from "../authentication/service/authentication-service";
-import { StyledTextField } from "../components/StyledTextField";
-import { useAppDispatch } from "../store/hooks";
-import { Thumbnail } from "../viewer-app/streams/Streams";
-import { StartStreamInput } from "./App";
-import { startStream } from "./store/streamerMiddleware";
-import { getThumbnailData } from "./streamer.api";
+import { resourcesUrl } from "../../authentication/service/authentication-service";
+import { StyledTextField } from "../../components/StyledTextField";
+import { useAppDispatch } from "../../store/hooks";
+import { Thumbnail } from "../../viewer-app/streams/Streams";
+import { StartStreamInput } from "../interface";
+import { getThumbnailData } from "../service/streamerService";
+import { startStream } from "../store/streamerMiddleware";
 
 const StartStreamButton = () => <Button
     type={'submit'}
@@ -97,3 +97,4 @@ const StartStreamForm = () => {
 }
 
 export { StartStreamForm };
+

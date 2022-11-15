@@ -1,3 +1,5 @@
+import { VIDEO_ID } from "../peer-connection/util";
+
 type VideoContainerProps = {
     parentWidth?: number,
     parentHeight?: number,
@@ -13,6 +15,6 @@ export const VideoContainer = ({ parentWidth, parentHeight }: VideoContainerProp
             height: 'auto',
             maxWidth,
         }}
-        id={'localvideo'}
+        id={VIDEO_ID}
         autoPlay />;
 };

@@ -1,7 +1,7 @@
 import { MessageTypes } from '../../signaling/constants';
 import { EnhancedStore } from '@reduxjs/toolkit';
 import { AppDispatch } from '../../store/store';
-import { SignalingChannel } from '../../signaling/SignalingChannel';
+import { SignalingChannel } from '../../signaling/signalingChannel';
 import { IceServerConfig } from '../../peer-connection/constants';
 import {
     onIceConnectionStateChange,

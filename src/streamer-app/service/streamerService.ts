@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
-import { appUrl } from '../authentication/service/authentication-service';
-import { Thumbnail } from '../viewer-app/streams/Streams';
+import { appUrl } from '../../authentication/service/authentication-service';
+import { Thumbnail } from '../../viewer-app/streams/Streams';
 
 const streamerApi = axios.create();
 

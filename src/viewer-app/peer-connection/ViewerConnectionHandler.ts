@@ -1,7 +1,7 @@
 import { EnhancedStore } from '@reduxjs/toolkit';
 import { SimpleErrorResponse } from '../../errors/errorFactory';
 import { ClientType, Message, MessageTypes } from '../../signaling/constants';
-import { SignalingChannel } from '../../signaling/SignalingChannel';
+import { SignalingChannel } from '../../signaling/signalingChannel';
 import {
     ConnectionStatus,
     getConnectionStatus,
@@ -21,6 +21,7 @@ export default class ViewerConnectionHandler {
     signaling: SignalingChannel | null;
     viewerPeerConnection: ViewerPeerConnection;
     streamId: string;
+    
     constructor(store: EnhancedStore, streamId: string) {
         this.store = store;
         this.dispatch = store.dispatch;
@@ -48,7 +49,10 @@ export default class ViewerConnectionHandler {
 
             this.dispatch(
                 setError({
-                    error,
+                    error: {
+                        message: error.message,
+                        type: error.type,
+                    },
                     action: '/streams',
                     label: 'Return to streams overview',
                 })

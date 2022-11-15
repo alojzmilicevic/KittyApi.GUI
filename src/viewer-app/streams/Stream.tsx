@@ -2,7 +2,7 @@ import { Button, styled } from "@mui/material";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useWindowSize } from "usehooks-ts";
-import { VideoContainer } from "../../components/video/VideoContainer";
+import { VideoContainer } from "../../video/VideoContainer";
 import { ConnectionStatus, getConnectionStatus, getStreamInfo } from "../../store/app";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { cleanup, connectToStream, init, leaveStream } from "../store/viewerMiddleware";

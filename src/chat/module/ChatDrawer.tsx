@@ -1,19 +1,14 @@
-import { Divider, Drawer, IconButton, styled, Tooltip } from '@mui/material';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import { default as Grid } from '@mui/material/Unstable_Grid2/Grid2';
-import Typography from '@mui/material/Typography';
-import { UserModel } from '../../user/UserModel';
-import { useAppSelector } from '../../store/hooks';
-import { getStreamInfo } from '../../store/app';
-import GroupIcon from '@mui/icons-material/Group';
-import { useState } from 'react';
 import ChatIcon from '@mui/icons-material/Chat';
-
-const TopPadding = styled('div')(({ theme }) => ({
-    // necessary for content to be below app bar
-    ...theme.mixins.toolbar
-}));
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import GroupIcon from '@mui/icons-material/Group';
+import { Drawer, IconButton, styled, Tooltip, Typography } from '@mui/material';
+import { default as Grid } from '@mui/material/Unstable_Grid2/Grid2';
+import { useState } from 'react';
+import { NavbarOffset } from '../../navigation/module/Navigation';
+import { getStreamInfo } from '../../store/app';
+import { useAppSelector } from '../../store/hooks';
+import { UserModel } from '../../user/UserModel';
 
 const OpenDrawerButton = styled(IconButton, {
     shouldForwardProp: (prop) => prop !== 'open'
@@ -25,26 +20,38 @@ const OpenDrawerButton = styled(IconButton, {
     width: 32,
     height: 32,
     color: 'white',
-    top: 64
+    top: 64,
+}));
+
+const StyledDrawer = styled(Drawer, {
+    shouldForwardProp: (prop) => prop !== 'drawerWidth'
+})<{ drawerWidth: number }>(({ drawerWidth, theme }) => ({
+    width: drawerWidth,
+    flexShrink: 0,
+    [`& .MuiDrawer-paper`]: {
+        width: drawerWidth,
+        boxSizing: 'border-box',
+        backgroundColor: theme.palette.primary.main,
+    }
 }));
 
 type DrawerHeaderProps = {
-    direction: string,
     handleDrawerClose: () => void,
     setView: (view: ViewType) => void,
     view: ViewType,
 }
 
+
+//TODO Maybe move this to a separate file
 enum ViewType {
     USERS_VIEW = 'users',
     CHAT_VIEW = 'chat',
 }
 
-const DrawerHeader = ({ direction, handleDrawerClose, view, setView }: DrawerHeaderProps) =>
-    <Grid xs={12} display={'flex'} justifyContent={'space-between'} alignItems={'center'}
-          sx={{ padding: 1 }}>
+const DrawerHeader = ({ handleDrawerClose, view, setView }: DrawerHeaderProps) =>
+    <Grid xs={12} display={'flex'} justifyContent={'space-between'} alignItems={'center'} sx={{ padding: 1 }}>
         <IconButton onClick={handleDrawerClose}>
-            {direction === 'rtl' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+            <ChevronRightIcon />
         </IconButton>
         <Typography>
             Stream Chat
@@ -66,50 +73,38 @@ const DrawerHeader = ({ direction, handleDrawerClose, view, setView }: DrawerHea
 
 type ChatDrawerProps = {
     open: boolean,
-    direction: string,
     drawerWidth: number,
     handleDrawerOpen: () => void,
     handleDrawerClose: () => void,
 }
 
-export const ChatDrawer = ({ open, direction, drawerWidth, handleDrawerOpen, handleDrawerClose }: ChatDrawerProps) => {
+export const ChatDrawer = ({ open, drawerWidth, handleDrawerOpen, handleDrawerClose }: ChatDrawerProps) => {
     const users = useAppSelector(getStreamInfo)?.users;
     const [view, setView] = useState<ViewType>(ViewType.CHAT_VIEW);
 
     return (
         <>
             <OpenDrawerButton open={open} onClick={handleDrawerOpen}>
-                {direction === 'rtl' ? < ChevronRightIcon /> : <ChevronLeftIcon />}
+                <ChevronLeftIcon />
             </OpenDrawerButton>
-            <Drawer
-                sx={{
-                    width: drawerWidth,
-                    flexShrink: 0,
-                    [`& .MuiDrawer-paper`]: {
-                        width: drawerWidth,
-                        boxSizing: 'border-box',
-                        backgroundColor: 'primary.main'
-                    }
-                }}
+            <StyledDrawer
+                drawerWidth={drawerWidth}
                 variant='persistent'
                 anchor='right'
                 open={open}
             >
-                <TopPadding />
+                <NavbarOffset />
 
                 <Grid container>
-                    <DrawerHeader direction={direction} handleDrawerClose={handleDrawerClose} view={view}
-                                  setView={setView} />
-                    <Divider style={{ width: '100%' }} />
-
+                    <DrawerHeader handleDrawerClose={handleDrawerClose} view={view} setView={setView} />
 
                     <Grid xs={12}>
-                        <Typography variant={'subtitle1'}>Users</Typography>
+                        <Typography>Users</Typography>
                         {users?.map((user: UserModel, i) => <Typography key={`${i} ${user.username}`}
-                                                                        variant={'body1'}>{`${user.firstName} ${user.lastName}`}</Typography>)}
+                            variant={'body1'}>{`${user.firstName} ${user.lastName}`}</Typography>)}
                     </Grid>
                 </Grid>
-            </Drawer>
+            </StyledDrawer>
         </>
     );
 };
