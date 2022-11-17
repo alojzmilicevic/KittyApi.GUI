@@ -1,7 +1,7 @@
 import { EnhancedStore } from '@reduxjs/toolkit';
 import { SimpleErrorResponse } from '../../errors/errorFactory';
 import { ClientType, Message, MessageTypes } from '../../signaling/constants';
-import { SignalingChannel } from '../../signaling/SignalingChannel';
+import { SignalingChannel } from '../../signaling/signalingChannel';
 import {
     ConnectionStatus,
     getConnectionStatus,
@@ -10,8 +10,8 @@ import {
     getStreamInfo as getStreamInfoSelector,
 } from '../../store/app';
 import { AppDispatch } from '../../store/store';
-import { getStreamInfo } from '../api/stream';
-import { ViewerPeerConnection } from './ViewerPeerConnection';
+import * as StreamService from '../../services/streamService';
+import { ViewerPeerConnection } from './viewerPeerConnection';
 
 export default class ViewerConnectionHandler {
     store: EnhancedStore;
@@ -20,6 +20,7 @@ export default class ViewerConnectionHandler {
     signaling: SignalingChannel | null;
     viewerPeerConnection: ViewerPeerConnection;
     streamId: string;
+
     constructor(store: EnhancedStore, streamId: string) {
         this.store = store;
         this.dispatch = store.dispatch;
@@ -40,23 +41,22 @@ export default class ViewerConnectionHandler {
 
     async getStreamInfo() {
         try {
-            const streamInfo = await getStreamInfo(this.streamId);
+            const streamInfo = await StreamService.getStreamInfo(this.streamId);
             this.dispatch(setStreamInfo(streamInfo));
         } catch (e: unknown) {
             let error = e as SimpleErrorResponse;
 
             this.dispatch(
                 setError({
-                    error,
-                    action: '/streams',
+                    error: {
+                        message: error.message,
+                        type: error.type,
+                    },
+                    action: '/',
                     label: 'Return to streams overview',
                 })
             );
         }
-    }
-
-    async cleanUpConnection() {
-        await this.leaveStream();
     }
 
     async connectToStream() {
@@ -65,13 +65,12 @@ export default class ViewerConnectionHandler {
             const s = getStreamInfoSelector(this.store.getState());
             await this.viewerPeerConnection.connectToStream(s?.streamId!);
         } else {
-            console.log('Error when connecting to stream, signaling is null');
+            //console.log('Error when connecting to stream, signaling is null');
             //TODO set error here
         }
     }
 
     async leaveStream() {
-
         await this.signaling?.cleanUpConnection();
         await this.viewerPeerConnection.leaveStream();
     }

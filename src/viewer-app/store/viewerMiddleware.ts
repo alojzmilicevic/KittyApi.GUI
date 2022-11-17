@@ -1,21 +1,23 @@
 import { createAction, PayloadAction } from '@reduxjs/toolkit';
-import ViewerConnectionHandler from '../peer-connection/ViewerConnectionHandler';
 import { logout } from '../../store/app';
+import ViewerConnectionHandler from '../peer-connection/viewerConnectionHandler';
 
 let client: ViewerConnectionHandler | null = null;
 
 const baseAction = 'viewer';
+type InitAction = { streamId: string };
+type ViewerAction = PayloadAction<InitAction> | PayloadAction<undefined>;
 
 export const viewerMiddleware =
-    (store: any) => (next: any) => async (action: PayloadAction) => {
+    (store: any) => (next: any) => async (action: ViewerAction) => {
         switch (action.type) {
             case init.type:
-                const { streamId } = action.payload!;
+                const { streamId } = action.payload as InitAction;
                 client = new ViewerConnectionHandler(store, streamId);
                 break;
 
             case cleanup.type:
-                client?.cleanUpConnection();
+                client?.leaveStream();
                 client = null;
                 break;
 
@@ -36,7 +38,7 @@ export const viewerMiddleware =
         return next(action);
     };
 
-export const init = createAction<{ streamId: string }>(`${baseAction}/init`);
+export const init = createAction<InitAction>(`${baseAction}/init`);
 export const cleanup = createAction(`${baseAction}/cleanup`);
 export const connectToStream = createAction(`${baseAction}/leaveStream`);
 export const leaveStream = createAction(`${baseAction}/connectToStream`);

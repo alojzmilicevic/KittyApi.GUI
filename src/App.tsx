@@ -1,21 +1,20 @@
 import { styled } from '@mui/material';
 import { Navigate, Outlet, Route, Routes } from 'react-router-dom';
-import { Login } from './authentication/login/LoginForm';
+import { Login } from './authentication/module/LoginForm';
 import { LoadingSpinner } from './components/LoadingSpinner';
-import { Navigation } from './components/navigation/Navigation';
-import { ErrorView } from './errors/ErrorView';
+import { ErrorView } from './errors/module/ErrorView';
 import './index.css';
-import { ProfilePage } from './profile-page/ProfilePage';
-import { App as StreamerApp } from './streamer-app/App';
+import { Navigation } from './navigation/module/Navigation';
+import { ProfilePage } from './profile-page/module/ProfilePage';
+import { StreamerApp } from './streamer-app/module/StreamerApp';
 import { useApp } from './useApp';
 import { UserModel } from './user/UserModel';
-import { App as ViewerApp } from './viewer-app/App';
-import { Stream } from './viewer-app/streams/Stream';
-import { Streams } from './viewer-app/streams/Streams';
+import { Streams } from './viewer-app/module/Streams';
+import { Stream } from './viewer-app/stream/module/Stream';
 
 const MainContainer = styled('div')({
     height: '100%',
-    overflow: 'hidden',
+    overflowX: 'hidden',
 });
 
 type ProtectedRouteProps = {
@@ -55,9 +54,8 @@ function App() {
                         <Route element={<ProtectedRoute user={user} />}>
                             <Route element={<StreamerApp />} path={'/streamer'} />
                             <Route element={<ProfilePage />} path={'/profile'} />
-                            <Route element={<ViewerApp />} path={'/'} />
-                            <Route element={<Streams />} path={'/streams'}></Route>
-                            <Route element={<Stream />} path={'/streams/:stream'} />
+                            <Route element={<Streams />} path={'/'}></Route>
+                            <Route element={<Stream />} path={'/:stream'} />
 
                         </Route>
                         <Route element={<RedirectRoute user={user} />}>

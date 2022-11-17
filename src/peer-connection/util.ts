@@ -1,9 +1,11 @@
 import { IceConnectionStates } from "./constants";
 
+export const VIDEO_ID = "local-video";
+
 export const onIceConnectionStateChange = (onDisconnect: () => void | Promise<void>, pc: RTCPeerConnection) => {
     pc.oniceconnectionstatechange = () => {
         if (pc.iceConnectionState === IceConnectionStates.CONNECTED) {
-
+            // console.log("Connected to peer");
         }
         if (pc.iceConnectionState === IceConnectionStates.DISCONNECTED) {
             onDisconnect();
@@ -12,8 +14,7 @@ export const onIceConnectionStateChange = (onDisconnect: () => void | Promise<vo
 }
 
 export const setLocalVideo = (stream: MediaStream | null) => {
-    const elementId = 'localvideo';
-    let video: HTMLVideoElement = document.getElementById(elementId) as HTMLVideoElement;
+    let video: HTMLVideoElement = document.getElementById(VIDEO_ID) as HTMLVideoElement;
 
     if (video) video.srcObject = stream;
 }

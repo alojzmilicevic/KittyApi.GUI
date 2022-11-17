@@ -65,7 +65,9 @@ class SignalingChannel {
     };
 
     async cleanUpConnection() {
-        if (!this.connection) return;
+        if (!this.connection) {
+            return;
+        }
 
         if (this.connection.state === HubConnectionState.Connecting) {
             this.shouldStopConnection = true;
