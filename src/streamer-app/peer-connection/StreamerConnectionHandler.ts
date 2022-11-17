@@ -92,7 +92,7 @@ export default class StreamerConnectionHandler {
                 this.dispatch(setStreamInfo(undefined));
             }
         } catch (error) {
-            //console.log(error);
+            console.error(error);
         }
     }
 

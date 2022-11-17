@@ -27,10 +27,10 @@ const StyledDrawer = styled(Drawer, {
     shouldForwardProp: (prop) => prop !== 'drawerWidth'
 })<{ drawerWidth: number }>(({ drawerWidth, theme }) => ({
     width: drawerWidth,
-    flexShrink: 0,
     [`& .MuiDrawer-paper`]: {
         width: drawerWidth,
         boxSizing: 'border-box',
+        padding: '8px 4px',
         backgroundColor: theme.palette.primary.main,
     }
 }));
@@ -49,7 +49,7 @@ enum ViewType {
 }
 
 const DrawerHeader = ({ handleDrawerClose, view, setView }: DrawerHeaderProps) =>
-    <Grid xs={12} display={'flex'} justifyContent={'space-between'} alignItems={'center'} sx={{ padding: 1 }}>
+    <Grid xs={12} display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
         <IconButton onClick={handleDrawerClose}>
             <ChevronRightIcon />
         </IconButton>
@@ -73,14 +73,16 @@ const DrawerHeader = ({ handleDrawerClose, view, setView }: DrawerHeaderProps) =
 
 type ChatDrawerProps = {
     open: boolean,
-    drawerWidth: number,
     handleDrawerOpen: () => void,
     handleDrawerClose: () => void,
+    drawerWidth: number,
+    smallScreen: boolean,
 }
 
-export const ChatDrawer = ({ open, drawerWidth, handleDrawerOpen, handleDrawerClose }: ChatDrawerProps) => {
+export const ChatDrawer = ({ open, drawerWidth, handleDrawerClose, handleDrawerOpen, smallScreen }: ChatDrawerProps) => {
     const users = useAppSelector(getStreamInfo)?.users;
     const [view, setView] = useState<ViewType>(ViewType.CHAT_VIEW);
+    const anchor = smallScreen ? 'bottom' : 'right';
 
     return (
         <>
@@ -88,15 +90,15 @@ export const ChatDrawer = ({ open, drawerWidth, handleDrawerOpen, handleDrawerCl
                 <ChevronLeftIcon />
             </OpenDrawerButton>
             <StyledDrawer
-                drawerWidth={drawerWidth}
                 variant='persistent'
-                anchor='right'
+                anchor={anchor}
                 open={open}
+                drawerWidth={drawerWidth}
             >
-                <NavbarOffset />
+                {anchor === 'right' && <NavbarOffset />}
 
                 <Grid container>
-                    <DrawerHeader handleDrawerClose={handleDrawerClose} view={view} setView={setView} />
+                    <DrawerHeader handleDrawerClose={handleDrawerClose} view={view} setView={setView}/>
 
                     <Grid xs={12}>
                         <Typography>Users</Typography>

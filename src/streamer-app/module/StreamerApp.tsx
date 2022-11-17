@@ -1,4 +1,4 @@
-import { styled } from '@mui/material';
+import { Box, styled } from '@mui/material';
 import { default as Grid } from '@mui/material/Unstable_Grid2';
 import { useEffect } from 'react';
 import { useChatDrawer } from '../../chat/hooks/useChatDrawer';
@@ -21,25 +21,43 @@ function useStreamerApp() {
 }
 
 const StyledGrid = styled(Grid)({
-    justifyContent: 'center',
-    padding: 16,
     display: 'flex',
+    justifyContent: 'center',
+});
+
+const StyledBox = styled(Box, {
+    shouldForwardProp: (prop) => prop !== 'containerWidth',
+})<{ containerWidth: number }>(({ containerWidth, theme }) => ({
+    width: containerWidth,
+    [theme.breakpoints.up('sm')]: {
+        paddingTop: theme.spacing(2),
+    }
+}));
+
+const CenterGrid = styled(Grid)({
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
 });
 
 const StreamerApp = () => {
     useStreamerApp();
     const drawerOptions = useChatDrawer();
+    const containerWidth = drawerOptions.containerWidth;
 
-    return <StyledGrid container columnGap={4}>
-        <Grid xs={12} sm={10} md={8} lg={6} xl={4}>
-            <VideoContainer />
-            <StreamControl />
-        </Grid>
-        <Grid xs={12} lg={2} sx={{ backgroundColor: 'red' }}>
-            <ChatDrawer {...drawerOptions} />
-        </Grid>
+    return <StyledBox containerWidth={containerWidth}>
+        <StyledGrid container>
+            <CenterGrid xs={12} sm={10} md={7} lg={6}>
+                <VideoContainer />
 
-    </StyledGrid>
+                <Grid xs={12} sm={8} display={'flex'} alignItems={'center'} flexDirection={'column'} sx={{ p: 2 }}>
+                    <StreamControl />
+                </Grid>
+            </CenterGrid>
+        </StyledGrid>
+        <ChatDrawer {...drawerOptions} />
+
+    </StyledBox>
 }
 
 export { StreamerApp };

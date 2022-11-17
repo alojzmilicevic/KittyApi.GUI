@@ -1,3 +1,4 @@
+import { useMediaQuery, useTheme } from '@mui/material';
 import { useState } from 'react';
 import { useWindowSize } from 'usehooks-ts';
 
@@ -6,8 +7,10 @@ const drawerWidth = 340;
 export function useChatDrawer() {
     const { width, height } = useWindowSize();
     const [open, setOpen] = useState(true);
+    const theme = useTheme();
+    const smallScreen = useMediaQuery(theme.breakpoints.down('lg'));
 
-    const containerWidth = open ? width - drawerWidth : width;
+    const containerWidth = open && !smallScreen ? width - drawerWidth : width;
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -20,9 +23,10 @@ export function useChatDrawer() {
     return {
         open,
         height,
-        drawerWidth,
+        drawerWidth: smallScreen ? width : drawerWidth,
         containerWidth,
         handleDrawerOpen,
-        handleDrawerClose
+        handleDrawerClose,
+        smallScreen,
     };
 }

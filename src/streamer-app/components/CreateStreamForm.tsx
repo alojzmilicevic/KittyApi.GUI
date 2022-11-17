@@ -1,6 +1,5 @@
 import { VideoCameraFront } from "@mui/icons-material";
-import { Button, MenuItem, styled, Typography } from "@mui/material";
-import { default as Grid } from '@mui/material/Unstable_Grid2';
+import { Box, Button, MenuItem, styled } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { resourcesUrl } from "../../authentication/service/authentication-service";
@@ -115,9 +114,7 @@ function useCreateStreamForm() {
 const CreateStreamForm = () => {
     const { control, onSubmit, thumbnails, getValues, errors } = useCreateStreamForm();
 
-    return <Grid container component='form' onSubmit={onSubmit} display={'flex'} justifyContent={'center'} flexDirection={'column'}>
-        <Typography variant='h5'>Start Stream</Typography>
-
+    return <Box component='form' onSubmit={onSubmit} sx={{ width: '100%' }}>
         <TitleControl control={control} errors={errors} />
         <ThumbnailControl
             control={control}
@@ -125,7 +122,7 @@ const CreateStreamForm = () => {
             getValues={getValues}
         />
         <StartStreamButton />
-    </Grid>
+    </Box>
 
 
 }

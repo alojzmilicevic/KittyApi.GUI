@@ -14,7 +14,7 @@ import { Stream } from './viewer-app/stream/module/Stream';
 
 const MainContainer = styled('div')({
     height: '100%',
-    overflow: 'hidden',
+    overflowX: 'hidden',
 });
 
 type ProtectedRouteProps = {
