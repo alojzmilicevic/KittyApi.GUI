@@ -15,7 +15,7 @@ export const viewerMiddleware =
                 break;
 
             case cleanup.type:
-                client?.cleanUpConnection();
+                client?.leaveStream();
                 client = null;
                 break;
 

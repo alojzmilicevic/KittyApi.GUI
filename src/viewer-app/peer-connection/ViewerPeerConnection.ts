@@ -33,19 +33,21 @@ export class ViewerPeerConnection {
     }
 
     leaveStream = async () => {
-        if (!this.peer) return;
+        if (!this.peer) {
+            return;
+        };
 
         setLocalVideo(null);
         this.peer.pc.close();
         this.peer = null;
         const s = getStreamInfoSelector(this.store.getState());
 
-        const streamInfo = await ViewerService.leaveStream(s?.streamId!);
+        await ViewerService.leaveStream(s?.streamId!);
 
         this.dispatch(
             setConnectionStatus({ connectionStatus: ConnectionStatus.IDLE })
         );
-        this.dispatch(setStreamInfo(streamInfo));
+        this.dispatch(setStreamInfo(undefined));
     };
 
     async connectToStream(streamId: string) {

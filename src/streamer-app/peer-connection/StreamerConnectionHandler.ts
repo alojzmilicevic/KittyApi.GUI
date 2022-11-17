@@ -105,7 +105,7 @@ export default class StreamerConnectionHandler {
         await this.streamerPeerConnection.onUserLeftStream(user);
     }
 
-    logout() {}
+    logout() { }
 
     onSocketMessage = async (user: string, message: Message) => {
         //console.log(`got ${message.type} from ${user}`);

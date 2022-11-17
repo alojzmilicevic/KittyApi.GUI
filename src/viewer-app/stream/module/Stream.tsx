@@ -1,11 +1,11 @@
 import { Button, styled } from "@mui/material";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useWindowSize } from "usehooks-ts";
-import { VideoContainer } from "../../../video/VideoContainer";
 import { ConnectionStatus, getConnectionStatus, getStreamInfo } from "../../../store/app";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { cleanup, connectToStream, init, leaveStream } from "../../store/viewerMiddleware";
+import { VideoContainer } from "../../../video/VideoContainer";
+import { cleanup, connectToStream, init } from "../../store/viewerMiddleware";
 
 function useStream() {
     const { width, height } = useWindowSize();
@@ -26,20 +26,15 @@ function useStream() {
     }, [dispatch, stream]);
 
     useEffect(() => {
-        if (streamInfo) {
+        if (streamInfo && connectionStatus !== ConnectionStatus.CONNECTED && connectionStatus !== ConnectionStatus.CONNECTING) {
             dispatch(connectToStream());
         }
-    }, [dispatch, streamInfo]);
+    }, [dispatch, streamInfo, connectionStatus]);
 
-    const onLeaveStream = useCallback(
-        () => {
-            navigate('/');
-            dispatch(leaveStream());
-        },
-        [dispatch, navigate],
-    )
 
-    return { connectionStatus, leaveStream: onLeaveStream, width, height };
+    return {
+        connectionStatus, leaveStream: () => navigate('/'), width, height
+    };
 }
 
 const Container = styled('div')({

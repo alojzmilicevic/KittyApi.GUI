@@ -59,17 +59,13 @@ export default class ViewerConnectionHandler {
         }
     }
 
-    async cleanUpConnection() {
-        await this.leaveStream();
-    }
-
     async connectToStream() {
         if (this.signaling) {
             await this.signaling.init();
             const s = getStreamInfoSelector(this.store.getState());
             await this.viewerPeerConnection.connectToStream(s?.streamId!);
         } else {
-            console.log('Error when connecting to stream, signaling is null');
+            //console.log('Error when connecting to stream, signaling is null');
             //TODO set error here
         }
     }
