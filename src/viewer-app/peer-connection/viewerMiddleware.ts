@@ -1,7 +1,7 @@
 import { EnhancedStore } from '@reduxjs/toolkit';
 import { SimpleErrorResponse } from '../../errors/errorFactory';
 import { ClientType, Message, MessageTypes } from '../../signaling/constants';
-import { SignalingChannel } from '../../signaling/signalingChannel';
+import { SignalingChannel } from '../../signaling/signaling';
 import {
     ConnectionStatus,
     getConnectionStatus,
@@ -11,7 +11,7 @@ import {
 } from '../../store/app';
 import { AppDispatch } from '../../store/store';
 import * as StreamService from '../../services/streamService';
-import { ViewerPeerConnection } from './viewerPeerConnection';
+import { ViewerPeerConnection } from './viewerPeerCon';
 
 export default class ViewerConnectionHandler {
     store: EnhancedStore;

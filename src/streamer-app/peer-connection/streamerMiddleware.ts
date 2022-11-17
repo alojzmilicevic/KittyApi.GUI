@@ -3,7 +3,7 @@ import { MediaConstraints } from '../../peer-connection/constants';
 import { setLocalVideo } from '../../peer-connection/util';
 import * as StreamService from '../../services/streamService';
 import { ClientType, Message, MessageTypes } from '../../signaling/constants';
-import { SignalingChannel } from '../../signaling/signalingChannel';
+import { SignalingChannel } from '../../signaling/signaling';
 import {
     ConnectionStatus,
     getStreamInfo,
@@ -14,7 +14,7 @@ import {
 import { AppDispatch } from '../../store/store';
 import { StartStreamInput } from '../interface';
 import * as StreamerApi from '../service/streamerService';
-import { StreamerPeerConnection } from './streamerPeerConnection';
+import { StreamerPeerConnection } from './peerCon';
 
 export default class StreamerConnectionHandler {
     store: EnhancedStore;
