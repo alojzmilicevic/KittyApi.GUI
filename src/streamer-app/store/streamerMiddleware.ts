@@ -1,7 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 import { logout } from '../../store/app';
 import { StartStreamInput } from '../interface';
-import StreamerConnectionHandler from '../peer-connection/streamerConnectionHandler';
+import StreamerConnectionHandler from '../peer-connection/streamerMiddleware';
 
 let client: StreamerConnectionHandler | null = null;
 
