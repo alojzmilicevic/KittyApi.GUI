@@ -1,16 +1,7 @@
 import { createTheme, ThemeOptions } from '@mui/material/styles';
 import { responsiveFontSizes } from '@mui/material';
 
-const darkTheme: ThemeOptions = {
-    palette: {
-        mode: 'dark',
-        primary: {
-            main: '#424242',
-        },
-        secondary: {
-            main: '#ffd180'
-        }
-    },
+const generalThemeOptions: ThemeOptions = {
     typography: {
         fontFamily: '"Calibri", "Helvetica", "Arial", sans-serif'
     },
@@ -25,16 +16,25 @@ const darkTheme: ThemeOptions = {
     }
 };
 
+const darkTheme: ThemeOptions = {
+    palette: {
+        mode: 'dark',
+        primary: {
+            main: '#424242',
+        },
+        secondary: {
+            main: '#ffd180'
+        }
+    },
+    ...generalThemeOptions,
+};
+
 const lightTheme: ThemeOptions = {
-    ...darkTheme,
     palette: {
         ...darkTheme.palette,
         mode: 'light'
     },
-    typography: {
-        ...darkTheme.typography
-    },
-    breakpoints: { ...darkTheme.breakpoints }
+    ...generalThemeOptions,
 };
 
 export const createMyTheme = (darkMode: boolean) =>

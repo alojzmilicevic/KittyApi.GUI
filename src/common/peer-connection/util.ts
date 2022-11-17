@@ -4,9 +4,6 @@ export const VIDEO_ID = "local-video";
 
 export const onIceConnectionStateChange = (onDisconnect: () => void | Promise<void>, pc: RTCPeerConnection) => {
     pc.oniceconnectionstatechange = () => {
-        if (pc.iceConnectionState === IceConnectionStates.CONNECTED) {
-            // console.log("Connected to peer");
-        }
         if (pc.iceConnectionState === IceConnectionStates.DISCONNECTED) {
             onDisconnect();
         }
