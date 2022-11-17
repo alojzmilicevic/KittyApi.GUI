@@ -20,7 +20,7 @@ export function useApp() {
                 if (userData) {
                     dispatch(setUserInfo(userData));
                 }
-            }).catch(error => {
+            }).catch(() => {
             logout();
         }).finally(() => {
             setReady(true);

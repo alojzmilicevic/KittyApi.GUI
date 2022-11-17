@@ -11,8 +11,7 @@ import {
 } from '../../store/app';
 import { AppDispatch } from '../../store/store';
 import * as StreamService from '../../services/streamService';
-
-import { ViewerPeerConnection } from './ViewerPeerConnection';
+import { ViewerPeerConnection } from './viewerPeerConnection';
 
 export default class ViewerConnectionHandler {
     store: EnhancedStore;
@@ -21,7 +20,7 @@ export default class ViewerConnectionHandler {
     signaling: SignalingChannel | null;
     viewerPeerConnection: ViewerPeerConnection;
     streamId: string;
-    
+
     constructor(store: EnhancedStore, streamId: string) {
         this.store = store;
         this.dispatch = store.dispatch;
@@ -53,7 +52,7 @@ export default class ViewerConnectionHandler {
                         message: error.message,
                         type: error.type,
                     },
-                    action: '/streams',
+                    action: '/',
                     label: 'Return to streams overview',
                 })
             );

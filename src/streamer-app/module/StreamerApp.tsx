@@ -20,8 +20,8 @@ function useStreamerApp() {
 const StreamerApp = () => {
     useStreamerApp();
 
-    return <Grid container justifyContent={'center'}>
-        <Grid xs={11} md={4}>
+    return <Grid container justifyContent={'center'} sx={{ p: 2 }}>
+        <Grid xs={12} sm={10} md={8} lg={6} xl={4}>
             <VideoContainer />
             <StreamControl />
         </Grid>

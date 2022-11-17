@@ -1,34 +1,28 @@
 import { default as Grid } from '@mui/material/Unstable_Grid2';
 import { useEffect, useState } from 'react';
-import { getStreams } from '../api/stream';
-import { StreamCard } from './StreamCard';
+import * as ViewerService from '../service/viewerService';
+import { StreamCard } from '../components/StreamCard';
+import { Stream } from '../interface';
 
-export interface Thumbnail {
-    thumbnailId: string;
-    thumbnailName: string;
-    thumbnailPath: string;
-}
-
-export interface Stream {
-    streamId: string;
-    streamTitle: string;
-    streamerName: string;
-    thumbnail: Thumbnail;
-    streamerUsername: string;
-}
-
-// TODO: Add skeleton loading
-const Streams = () => {
+function useStreams() {
     const [streams, setStreams] = useState<Stream[]>([]);
 
     useEffect(() => {
-        getStreams().then((res) => {
-            setStreams(res);
-        });
+        const fetchStreams = async () => {
+            const streams = await ViewerService.getStreams();
+            setStreams(streams);
+        };
+
+        fetchStreams();
+
     }, []);
 
 
-    if (streams.length < 1) return null;
+    return { streams };
+}
+
+const Streams = () => {
+    const { streams } = useStreams();
 
     return (
         <Grid

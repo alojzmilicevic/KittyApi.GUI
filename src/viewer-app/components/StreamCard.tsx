@@ -4,19 +4,29 @@ import {
     CardActionArea,
     CardContent,
     CardMedia,
-    Typography,
+    styled,
+    Typography
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { resourcesUrl } from '../../authentication/service/authentication-service';
-import { Stream } from './Streams';
+import { Stream } from '../interface';
 
 interface Props {
     stream: Stream;
 }
 
+const StyledTextContent = styled('div')(({ theme }) => ({
+    display: 'flex',
+    flexDirection: 'column',
+    marginLeft: theme.spacing(2)
+}));
+
+const StyledCardContent = styled(CardContent)({ display: 'flex' });
+
 const StreamCard = ({ stream }: Props) => {
     const { streamTitle, streamerName, thumbnail, streamerUsername } = stream;
     const navigate = useNavigate();
+
     return (
         <Card>
             <CardActionArea onClick={() => { navigate(`${streamerUsername}`) }}>
@@ -26,20 +36,21 @@ const StreamCard = ({ stream }: Props) => {
                     image={`${resourcesUrl}${thumbnail.thumbnailPath}`}
                     alt={thumbnail.thumbnailName}
                 />
-                <CardContent sx={{ display: 'flex' }}>
+                <StyledCardContent sx={{ display: 'flex' }}>
                     <Avatar>{streamerName[0]}</Avatar>
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        <Typography sx={{ ml: 2 }} variant="body2">
+                    <StyledTextContent>
+                        <Typography variant="body2">
                             {streamTitle}
                         </Typography>
-                        <Typography sx={{ ml: 2 }} variant="caption">
+                        <Typography variant="caption">
                             {streamerName}
                         </Typography>
-                    </div>
-                </CardContent>
+                    </StyledTextContent>
+                </StyledCardContent>
             </CardActionArea>
         </Card>
     );
 };
 
 export { StreamCard };
+

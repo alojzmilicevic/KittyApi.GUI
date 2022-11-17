@@ -1,4 +1,4 @@
 export interface StartStreamInput {
     title: string;
-    thumbnail: string;
+    thumbnail: number;
 }

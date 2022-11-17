@@ -40,9 +40,6 @@ const Navigation = ({ user, logout, loading }: NavigationProps) => (
                     <Button component={NavLink} to={'/'} disableRipple size={'small'} color='secondary' startIcon={<AppTopLeftIcon />}>
                         KittyIO
                     </Button>
-                    <Button component={NavLink} to={'/streams'} color="secondary">
-                        Streams
-                    </Button>
                 </FlexCenter>
                 <FlexCenter>
                     {user &&

@@ -9,9 +9,8 @@ import { ProfilePage } from './profile-page/module/ProfilePage';
 import { StreamerApp } from './streamer-app/module/StreamerApp';
 import { useApp } from './useApp';
 import { UserModel } from './user/UserModel';
-import { App as ViewerApp } from './viewer-app/App';
-import { Stream } from './viewer-app/streams/Stream';
-import { Streams } from './viewer-app/streams/Streams';
+import { Streams } from './viewer-app/module/Streams';
+import { Stream } from './viewer-app/stream/module/Stream';
 
 const MainContainer = styled('div')({
     height: '100%',
@@ -55,9 +54,8 @@ function App() {
                         <Route element={<ProtectedRoute user={user} />}>
                             <Route element={<StreamerApp />} path={'/streamer'} />
                             <Route element={<ProfilePage />} path={'/profile'} />
-                            <Route element={<ViewerApp />} path={'/'} />
-                            <Route element={<Streams />} path={'/streams'}></Route>
-                            <Route element={<Stream />} path={'/streams/:stream'} />
+                            <Route element={<Streams />} path={'/'}></Route>
+                            <Route element={<Stream />} path={'/:stream'} />
 
                         </Route>
                         <Route element={<RedirectRoute user={user} />}>

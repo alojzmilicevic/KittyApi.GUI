@@ -1,6 +1,6 @@
 import { createAction, PayloadAction } from '@reduxjs/toolkit';
-import ViewerConnectionHandler from '../peer-connection/ViewerConnectionHandler';
 import { logout } from '../../store/app';
+import ViewerConnectionHandler from '../peer-connection/viewerConnectionHandler';
 
 let client: ViewerConnectionHandler | null = null;
 

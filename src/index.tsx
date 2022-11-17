@@ -1,12 +1,11 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
-import { BrowserRouter } from 'react-router-dom';
-import { store } from './store/store';
-import { Provider } from 'react-redux';
-import { ThemeProvider } from '@mui/material/styles';
-import { createMyTheme } from './theme';
 import { CssBaseline } from '@mui/material';
+import { ThemeProvider } from '@mui/material/styles';
+import ReactDOM from 'react-dom/client';
+import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
+import App from './App';
+import { store } from './store/store';
+import { createMyTheme } from './theme';
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement

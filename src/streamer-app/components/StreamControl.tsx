@@ -3,14 +3,14 @@ import { Button } from "@mui/material";
 import { getStreamInfo } from "../../store/app";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { endStream } from "../store/streamerMiddleware";
-import { StartStreamForm } from "./StartStreamForm";
+import { CreateStreamForm } from "./CreateStreamForm";
 
 const StreamControl = () => {
     const dispatch = useAppDispatch();
     const streamInfo = useAppSelector(getStreamInfo);
     
     return <>
-        {!streamInfo && <StartStreamForm />}
+        {!streamInfo && <CreateStreamForm />}
         {streamInfo && <Button
             size={'small'}
             variant='contained'
