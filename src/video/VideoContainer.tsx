@@ -1,4 +1,4 @@
-import { VIDEO_ID } from "../peer-connection/util";
+import { VIDEO_ID } from "../common/peer-connection/util";
 
 type VideoContainerProps = {
     parentWidth?: number,

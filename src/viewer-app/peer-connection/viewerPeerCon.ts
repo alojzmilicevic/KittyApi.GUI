@@ -1,12 +1,12 @@
-import { MessageTypes } from '../../signaling/constants';
+import { MessageTypes } from '../../common/signaling/constants';
 import { EnhancedStore } from '@reduxjs/toolkit';
 import { AppDispatch } from '../../store/store';
-import { SignalingChannel } from '../../signaling/signaling';
-import { IceServerConfig } from '../../peer-connection/constants';
+import { SignalingChannel } from '../../common/signaling/signaling';
+import { IceServerConfig } from '../../common/peer-connection/constants';
 import {
     onIceConnectionStateChange,
     setLocalVideo,
-} from '../../peer-connection/util';
+} from '../../common/peer-connection/util';
 import {
     ConnectionStatus,
     getUser,

@@ -1,9 +1,9 @@
 import { EnhancedStore } from '@reduxjs/toolkit';
 import { AppDispatch } from '../../store/store';
-import { SignalingChannel } from '../../signaling/signaling';
-import { MessageTypes } from '../../signaling/constants';
-import { IceServerConfig } from '../../peer-connection/constants';
-import { onIceConnectionStateChange } from '../../peer-connection/util';
+import { SignalingChannel } from '../../common/signaling/signaling';
+import { MessageTypes } from '../../common/signaling/constants';
+import { IceServerConfig } from '../../common/peer-connection/constants';
+import { onIceConnectionStateChange } from '../../common/peer-connection/util';
 import { getUser, setStreamInfo } from '../../store/app';
 import * as StreamService from '../../services/streamService';
 

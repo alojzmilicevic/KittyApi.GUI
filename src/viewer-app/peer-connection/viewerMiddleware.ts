@@ -1,7 +1,7 @@
 import { EnhancedStore } from '@reduxjs/toolkit';
 import { SimpleErrorResponse } from '../../errors/errorFactory';
-import { ClientType, Message, MessageTypes } from '../../signaling/constants';
-import { SignalingChannel } from '../../signaling/signaling';
+import { ClientType, Message, MessageTypes } from '../../common/signaling/constants';
+import { SignalingChannel } from '../../common/signaling/signaling';
 import {
     ConnectionStatus,
     getConnectionStatus,

@@ -1,9 +1,9 @@
 import { EnhancedStore } from '@reduxjs/toolkit';
-import { MediaConstraints } from '../../peer-connection/constants';
-import { setLocalVideo } from '../../peer-connection/util';
+import { MediaConstraints } from '../../common/peer-connection/constants';
+import { setLocalVideo } from '../../common/peer-connection/util';
 import * as StreamService from '../../services/streamService';
-import { ClientType, Message, MessageTypes } from '../../signaling/constants';
-import { SignalingChannel } from '../../signaling/signaling';
+import { ClientType, Message, MessageTypes } from '../../common/signaling/constants';
+import { SignalingChannel } from '../../common/signaling/signaling';
 import {
     ConnectionStatus,
     getStreamInfo,
