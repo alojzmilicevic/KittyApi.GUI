@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { resourcesUrl } from '../../authentication/service/authentication-service';
+import { getImagePath } from '../../common/util/util';
 import { Stream } from '../interface';
 
 interface Props {
@@ -33,7 +34,7 @@ const StreamCard = ({ stream }: Props) => {
                 <CardMedia
                     component="img"
                     height="140"
-                    image={`${resourcesUrl}${thumbnail.thumbnailPath}`}
+                    image={`${resourcesUrl}${getImagePath(thumbnail.thumbnailPath)}`}
                     alt={thumbnail.thumbnailName}
                 />
                 <StyledCardContent sx={{ display: 'flex' }}>

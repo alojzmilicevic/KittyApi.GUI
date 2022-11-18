@@ -22,7 +22,7 @@ const validateUsername = async (
 
     setLoading(true);
 
-    const res = await checkUsername(value!);
+    const res = await checkUsername(value);
     setLoading(false);
     return !res.data;
 };

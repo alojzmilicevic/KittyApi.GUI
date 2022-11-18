@@ -20,6 +20,7 @@ export default class ViewerConnectionHandler {
     signaling: SignalingChannel | null;
     viewerPeerConnection: ViewerPeerConnection;
     streamId: string;
+    logLevel = 'off';
 
     constructor(store: EnhancedStore, streamId: string) {
         this.store = store;
@@ -65,8 +66,7 @@ export default class ViewerConnectionHandler {
             const s = getStreamInfoSelector(this.store.getState());
             await this.viewerPeerConnection.connectToStream(s?.streamId!);
         } else {
-            //console.log('Error when connecting to stream, signaling is null');
-            //TODO set error here
+            console.error('Error when connecting to stream, signaling is null');
         }
     }
 
@@ -83,7 +83,9 @@ export default class ViewerConnectionHandler {
     }
 
     onSocketMessage = async (user: string, message: Message) => {
-        //console.log(`got ${message.type} from ${user}`);
+        if (this.logLevel === 'debug') {
+            console.log(`got ${message.type} from ${user}`);
+        }
         switch (message.type) {
             case MessageTypes.CALL:
                 await this.connectToStream();

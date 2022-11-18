@@ -22,7 +22,7 @@ export default class StreamerConnectionHandler {
     stream: MediaStream | null = null;
     signaling: SignalingChannel;
     streamerPeerConnection: StreamerPeerConnection;
-
+    logLevel = 'off';
     constructor(store: EnhancedStore) {
         this.store = store;
         this.dispatch = store.dispatch;
@@ -110,10 +110,14 @@ export default class StreamerConnectionHandler {
         await this.streamerPeerConnection.onUserLeftStream(user);
     }
 
-    logout() { }
+    logout() {
+        this.cleanUpConnection();
+    }
 
     onSocketMessage = async (user: string, message: Message) => {
-        //console.log(`got ${message.type} from ${user}`);
+        if (this.logLevel === 'debug') {
+            console.log(`got ${message.type} from ${user}`);
+        }
         switch (message.type) {
             case MessageTypes.INCOMING_CALL:
                 await this.streamerPeerConnection.onIncomingCall(

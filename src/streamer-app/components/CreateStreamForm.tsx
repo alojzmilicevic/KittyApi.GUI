@@ -3,6 +3,7 @@ import { Box, Button, MenuItem, styled } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { resourcesUrl } from "../../authentication/service/authentication-service";
+import { getImagePath } from "../../common/util/util";
 import { LabeledSelect } from "../../components/LabeledSelect";
 import { StyledTextField } from "../../components/StyledTextField";
 import { useAppDispatch } from "../../store/hooks";
@@ -26,11 +27,8 @@ const StartStreamButton = () => <Button
 const SmallImage = styled('img')({
     width: 100,
     height: 100,
-    objectFit: 'cover',
-    borderRadius: 4,
-    border: '1px solid #ccc',
-    padding: 2,
-    margin: 2,
+    borderRadius: 12,
+    padding: 4,
 });
 
 const StyledImageDiv = styled('div')({
@@ -50,16 +48,16 @@ const ThumbnailControl = ({ control, thumbnails, getValues }: ThumbnailControlPr
     }
 
     const currentThumbnail = getValues('thumbnail');
-    const path = thumbnails[currentThumbnail - 1].thumbnailPath;
-    const url = `${resourcesUrl}${path}`;
+    const path = thumbnails[currentThumbnail].thumbnailPath;
+    const url = `${resourcesUrl}${getImagePath(path, 'xl')}`;
 
     return <>
         <Controller
             name='thumbnail'
             control={control}
-            render={({ field: { onChange, value } }) => <StyledImageDiv>
+            render={({ field: { onChange, value, name } }) => <StyledImageDiv>
                 <LabeledSelect label={"Thumbnail"} onChange={onChange} value={value}>
-                    {thumbnails.map((thumbnail: Thumbnail, index: number) => <MenuItem key={index} value={thumbnail.thumbnailId}>{thumbnail.thumbnailName}</MenuItem>)}
+                    {thumbnails.map((thumbnail: Thumbnail, index: number) => <MenuItem key={index} value={index}>{thumbnail.thumbnailName}</MenuItem>)}
                 </LabeledSelect>
                 <SmallImage src={url} alt='thumbnailAlt' />
             </StyledImageDiv>
@@ -83,7 +81,7 @@ function useCreateStreamForm() {
     const dispatch = useAppDispatch();
     const [thumbnails, setThumbnails] = useState<Thumbnail[]>([]);
     const { control, handleSubmit, formState: { errors }, getValues, watch } = useForm<StartStreamInput>({
-        mode: 'onChange', defaultValues: { title: '', thumbnail: 1 }
+        mode: 'onChange', defaultValues: { title: '', thumbnail: 0 }
     });
 
     // Need to watch for changes on this otherwise image wont refresh
@@ -99,7 +97,8 @@ function useCreateStreamForm() {
     }, []);
 
     const onSubmitForm = (formInput: StartStreamInput) => {
-        dispatch(startStream(formInput));
+        const thumbnail = thumbnails[formInput.thumbnail]; // Get the thumbnail id
+        dispatch(startStream({ title: formInput.title, thumbnail: thumbnail.thumbnailId }));
     }
 
     return {
