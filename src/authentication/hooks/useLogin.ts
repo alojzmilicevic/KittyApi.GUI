@@ -1,8 +1,8 @@
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { getUserData, login } from '../service/authentication-service';
-import { useAppDispatch } from '../../store/hooks';
+import { ServerError } from '../../errors/serverError';
 import { setUserInfo } from '../../store/app';
-import { generateErrorMessage } from '../../errors/errorFactory';
+import { useAppDispatch } from '../../store/hooks';
+import { login, LoginResponse } from '../service/authentication-service';
 
 interface IFormInput {
     email: string;
@@ -16,21 +16,18 @@ export function useLogin() {
         formState: { errors },
         setError,
     } = useForm<IFormInput>();
+
     const dispatch = useAppDispatch();
 
     const onSubmit: SubmitHandler<IFormInput> = (data) => {
         login(data.email, data.password)
-            .then(async (token: string) => {
+            .then(({ token, user }: LoginResponse) => {
                 if (token) {
                     localStorage.setItem('token', token);
-                    const user = await getUserData();
                     dispatch(setUserInfo(user));
                 }
             })
-            .catch((e) => {
-                const errorCode = e.response.data.errors;
-                setError('email', { ...generateErrorMessage(errorCode) });
-            });
+            .catch((e: ServerError) => setError('email', { type: e.type, message: e.message }));
     };
 
     return { onSubmit, control, handleSubmit, errors };

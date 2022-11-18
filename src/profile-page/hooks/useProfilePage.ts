@@ -8,6 +8,7 @@ import {
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useState } from 'react';
+import { SimpleErrorResponse } from '../../errors/errorFactory';
 
 interface IProfileInput {
     username: string;
@@ -59,10 +60,8 @@ export function useProfilePage() {
             dispatch(setUserInfo(res.user));
             reset();
         } catch (e) {
-            setError('username', {
-                type: 'custom',
-                message: 'Something went wrong when setting username...',
-            });
+            let error = e as SimpleErrorResponse;
+            setError('username', { type: error.type, message: error.message });
         }
     };
 

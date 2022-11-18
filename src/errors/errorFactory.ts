@@ -3,7 +3,8 @@ type ErrorType =
     | 'User.AlreadyExists'
     | 'User.AlreadyInStream'
     | 'Stream.NotFound'
-    | 'Stream.AlreadyLive';
+    | 'Stream.AlreadyLive'
+    | 'Server.Error';
 
 export const ErrorMap = {
     'User.NotFound': 'Invalid username or password',
@@ -12,6 +13,7 @@ export const ErrorMap = {
     'Stream.NotFound': 'Stream not found',
     'Stream.AlreadyLive': 'Stream is already live',
     'Stream.NotLive': 'This Stream is not live',
+    'Server.Error': 'Oops something went wrong... Server error',
 };
 
 export type ErrorResponse = {
@@ -34,5 +36,5 @@ export const generateErrorMessage = (
         return { message: ErrorMap[errorCode], type: errorCode };
     }
 
-    throw new Error(`Error code ${errorCode} not found`);
+    throw new Error(`Something went wrong... ${errorCode} not found`);
 };

@@ -50,6 +50,10 @@ export default class StreamerConnectionHandler {
     }
 
     async startStream({ title, thumbnail }: StartStreamInput) {
+        if (!this.stream) {
+            await this.initClient();
+        }
+
         this.dispatch(
             setConnectionStatus({
                 connectionStatus: ConnectionStatus.CONNECTING,
@@ -98,6 +102,7 @@ export default class StreamerConnectionHandler {
 
     async cleanUpConnection() {
         this.stream?.getTracks()[0].stop();
+        this.stream = null;
         await this.signaling.cleanUpConnection();
     }
 

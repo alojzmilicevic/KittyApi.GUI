@@ -1,4 +1,6 @@
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
+import { generateErrorMessage } from '../../errors/errorFactory';
+import { ServerError } from '../../errors/serverError';
 import { appAxios } from '../../services/serviceMiddleware';
 import { UserModel } from '../../user/UserModel';
 
@@ -6,36 +8,43 @@ const baseUrl = 'https://localhost:7076';
 export const appUrl = `${baseUrl || process.env.REACT_APP_SERVER_URL}/api`;
 export const resourcesUrl = `${baseUrl || process.env.REACT_APP_SERVER_URL}`;
 
-export const login = async (email: string | null, password: string | null) =>
+export type LoginResponse = {
+    token: string;
+    user: UserModel;
+};
+
+export const login = async (email: string | null, password: string | null): Promise<LoginResponse> =>
     axios
-        .post<string>(`${appUrl}/auth/login`, {
+        .post<LoginResponse>(`${appUrl}/auth/login`, {
             userName: email,
             password,
         })
-        .then((response: AxiosResponse<string>) => response.data)
+        .then((response: AxiosResponse<LoginResponse>) => response.data)
         .catch((e) => {
-            throw new Error(e);
+            if (e.code === 'ERR_NETWORK') {
+                throw new ServerError({ ...generateErrorMessage('Server.Error') });
+            }
+
+            throw new ServerError({ ...generateErrorMessage(e.response!.data.errors) });
         });
 
-export const getUserData: () => Promise<UserModel> = () => {
-    return appAxios
-        .get<UserModel>(`${appUrl}/user`)
-        .then((res: AxiosResponse<UserModel>) => res.data)
-        .catch((e) => {
-            throw new Error(e);
-        });
-};
+export const getUserData: () => Promise<UserModel> = () => appAxios
+    .get<UserModel>(`${appUrl}/user`)
+    .then((res: AxiosResponse<UserModel>) => res.data)
+    .catch((e: AxiosError) => {
+        throw new Error(e.message);
+    });
 
-export const changeUserName = (username: string) =>
+export const changeUserName = (username: string): Promise<LoginResponse> =>
     appAxios
-        .post<{ user: UserModel; token: string }>(
+        .post<LoginResponse>(
             `${appUrl}/user/change-username?username=${username}`
         )
         .then(
-            (res: AxiosResponse<{ user: UserModel; token: string }>) => res.data
+            (res: AxiosResponse<LoginResponse>) => res.data
         )
         .catch((e) => {
-            throw new Error(e);
+            throw new ServerError({ ...generateErrorMessage(e.response!.data.errors) });
         });
 
 export const checkUsername = (username: string) =>
