@@ -27,23 +27,27 @@ class SignalingChannel {
 
     async init() {
         const token = localStorage.getItem('token');
-        this.connection = new HubConnectionBuilder()
-            .withUrl(`${process.env.REACT_APP_SERVER_URL}/chatHub?clientType=${this.clientType}&token=${token}`, {
-                logger: LogLevel.Error,
-                transport: HttpTransportType.WebSockets
-            })
-            .withAutomaticReconnect()
-            .build();
+        try {
+            this.connection = new HubConnectionBuilder()
+                .withUrl(`${process.env.REACT_APP_SERVER_URL}/chatHub?clientType=${this.clientType}&token=${token}`, {
+                    logger: LogLevel.Error,
+                    transport: HttpTransportType.WebSockets | HttpTransportType.LongPolling,
+                    withCredentials: false,
+                })
+                .build();
 
-        this.connection.start().then(() => {
+            await this.connection.start();
             this.connection?.on('ReceiveMessage',
                 (user, message) => this.onSocketMessage(user, message));
 
-            if (this.shouldStopConnection) {
-                this.cleanUpConnection();
-                this.shouldStopConnection = false;
-            }
-        });
+        } catch (error) {
+            console.error(error);
+        }
+
+        if (this.shouldStopConnection) {
+            this.cleanUpConnection();
+            this.shouldStopConnection = false;
+        }
     }
 
     sendMessageToViewer = async (message: any, user: string) => {

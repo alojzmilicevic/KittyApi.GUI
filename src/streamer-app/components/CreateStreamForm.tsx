@@ -6,7 +6,8 @@ import { resourcesUrl } from "../../authentication/service/authentication-servic
 import { getImagePath } from "../../common/util/util";
 import { LabeledSelect } from "../../components/LabeledSelect";
 import { StyledTextField } from "../../components/StyledTextField";
-import { useAppDispatch } from "../../store/hooks";
+import { getUser } from "../../store/app";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { Thumbnail } from "../../viewer-app/interface";
 import { StartStreamInput } from "../interface";
 import { getThumbnailData } from "../service/streamerService";
@@ -70,6 +71,7 @@ const TitleControl = ({ control, errors }: { control: any, errors: any }) => <Co
     name='title'
     control={control}
     rules={{ required: 'This field is required' }}
+    defaultValue=''
     render={({ field }) => <StyledTextField
         label='Stream Title'
         error={!!errors.title}
@@ -79,9 +81,10 @@ const TitleControl = ({ control, errors }: { control: any, errors: any }) => <Co
 
 function useCreateStreamForm() {
     const dispatch = useAppDispatch();
+    const user = useAppSelector(getUser);
     const [thumbnails, setThumbnails] = useState<Thumbnail[]>([]);
     const { control, handleSubmit, formState: { errors }, getValues, watch } = useForm<StartStreamInput>({
-        mode: 'onChange', defaultValues: { title: '', thumbnail: 0 }
+        mode: 'onChange', defaultValues: { title: user?.firstName + " " + user?.lastName + " stream", thumbnail: 0 }
     });
 
     // Need to watch for changes on this otherwise image wont refresh

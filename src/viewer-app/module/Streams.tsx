@@ -32,7 +32,7 @@ const Streams = () => {
             style={{ padding: 16 }}
         >
             {streams.map((stream: Stream, index) => (
-                <Grid style={{ maxWidth: 350 }} xs={2} key={index}>
+                <Grid style={{ maxWidth: 350 }} xs={12} key={index}>
                     <StreamCard stream={stream} />
                 </Grid>
             ))}

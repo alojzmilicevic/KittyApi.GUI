@@ -4,9 +4,9 @@ import { ServerError } from '../../errors/serverError';
 import { appAxios } from '../../services/serviceMiddleware';
 import { UserModel } from '../../user/UserModel';
 
-const baseUrl = 'https://localhost:7076';
-export const appUrl = `${baseUrl || process.env.REACT_APP_SERVER_URL}/api`;
-export const resourcesUrl = `${baseUrl || process.env.REACT_APP_SERVER_URL}`;
+export const localHost = 'https://localhost:7076';
+export const appUrl = `${process.env.REACT_APP_SERVER_URL || localHost}/api`;
+export const resourcesUrl = `${process.env.REACT_APP_SERVER_URL || localHost}`;
 
 export type LoginResponse = {
     token: string;

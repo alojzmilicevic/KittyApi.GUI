@@ -20,7 +20,7 @@ export default class ViewerConnectionHandler {
     signaling: SignalingChannel | null;
     viewerPeerConnection: ViewerPeerConnection;
     streamId: string;
-    logLevel = 'off';
+    logLevel = 'debug';
 
     constructor(store: EnhancedStore, streamId: string) {
         this.store = store;

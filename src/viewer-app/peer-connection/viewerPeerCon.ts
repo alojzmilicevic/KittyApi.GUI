@@ -86,7 +86,10 @@ export class ViewerPeerConnection {
     async handleOffer(message: any) {
         const sdp = new RTCSessionDescription(message);
         const pc = this.peer?.pc;
-        if (!pc) return;
+        if (!pc) {
+            console.error('Unable to handle offer, PeerConnection not yet created!');
+            return;
+        }
         // TODO what happens if pc is null
         await pc.setRemoteDescription(sdp);
 
@@ -101,7 +104,10 @@ export class ViewerPeerConnection {
     }
 
     async onIceCandidate(iceCandidate: any) {
-        // TODO what happens if pc is null
-        await this.peer?.pc.addIceCandidate(iceCandidate);
+        if (this.peer?.pc) {
+            await this.peer?.pc.addIceCandidate(iceCandidate);
+        } else {
+            console.error('Can\'t handle ice candidates PeerConnection not yet created!');
+        }
     }
 }

@@ -22,7 +22,7 @@ export default class StreamerConnectionHandler {
     stream: MediaStream | null = null;
     signaling: SignalingChannel;
     streamerPeerConnection: StreamerPeerConnection;
-    logLevel = 'off';
+    logLevel = 'debug';
     constructor(store: EnhancedStore) {
         this.store = store;
         this.dispatch = store.dispatch;
@@ -116,7 +116,9 @@ export default class StreamerConnectionHandler {
 
     onSocketMessage = async (user: string, message: Message) => {
         if (this.logLevel === 'debug') {
-            console.log(`got ${message.type} from ${user}`);
+            if (message.type !== MessageTypes.OFFER && message.type !== MessageTypes.ICE_CANDIDATE) {
+                console.log(`got ${message.type} from ${user}`);
+            }
         }
         switch (message.type) {
             case MessageTypes.INCOMING_CALL:
