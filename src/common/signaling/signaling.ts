@@ -29,7 +29,7 @@ class SignalingChannel {
         const token = localStorage.getItem('token');
         try {
             this.connection = new HubConnectionBuilder()
-                .withUrl(`${process.env.REACT_APP_SERVER_URL || 'https://capappapi.azurewebsites.net'}/chatHub?clientType=${this.clientType}&token=${token}`, {
+                .withUrl(`${process.env.REACT_APP_SERVER_URL}/chatHub?clientType=${this.clientType}&token=${token}`, {
                     logger: LogLevel.Error,
                     transport: HttpTransportType.WebSockets | HttpTransportType.LongPolling,
                     withCredentials: false,

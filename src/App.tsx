@@ -42,8 +42,6 @@ const RedirectRoute = ({ user, redirectPath = '/' }: ProtectedRouteProps) => {
 function App() {
     const { user, ready, logout, error } = useApp();
 
-    console.log('process.env', process.env);
-
     return (
         <>
             <ErrorView />

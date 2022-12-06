@@ -4,9 +4,8 @@ import { ServerError } from '../../errors/serverError';
 import { appAxios } from '../../services/serviceMiddleware';
 import { UserModel } from '../../user/UserModel';
 
-export const localHost = 'https://capappapi.azurewebsites.net' || 'https://localhost:7076';
-export const appUrl = `${process.env.REACT_APP_SERVER_URL || localHost}/api`;
-export const resourcesUrl = `${process.env.REACT_APP_SERVER_URL || localHost}`;
+export const appUrl = `${process.env.REACT_APP_SERVER_URL}/api`;
+export const resourcesUrl = `${process.env.REACT_APP_SERVER_URL}`;
 
 export type LoginResponse = {
     token: string;
