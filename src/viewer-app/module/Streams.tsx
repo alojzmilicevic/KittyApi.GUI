@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import * as ViewerService from '../service/viewerService';
 import { StreamCard } from '../components/StreamCard';
 import { Stream } from '../interface';
+import { Box, Typography } from '@mui/material';
 
 function useStreams() {
     const [streams, setStreams] = useState<Stream[]>([]);
@@ -21,9 +22,17 @@ function useStreams() {
     return { streams };
 }
 
+const NoStreamsView = () => <Box sx={{ p: 4 }}>
+    <Typography variant='h3'>No streams available</Typography>
+</Box>
+
 const Streams = () => {
     const { streams } = useStreams();
 
+    if (streams.length === 0) {
+        return <NoStreamsView />
+    }
+    
     return (
         <Grid
             container
