@@ -33,6 +33,7 @@ jobs:
           ###### End of Repository/Build Configurations ######
         env: # Add environment variables here
           VITE_SERVER_URL: ${{ secrets.API_URL }}
+          VITE_DEBUG_LEVEL: ${{ secrets.DEBUG_LEVEL }}
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
     runs-on: ubuntu-latest

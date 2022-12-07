@@ -19,13 +19,10 @@ export default class ViewerConnectionHandler {
     stream: MediaStream | null = null;
     signaling: SignalingChannel | null;
     viewerPeerConnection: ViewerPeerConnection;
-    streamId: string;
-    logLevel = 'debug';
 
     constructor(store: EnhancedStore, streamId: string) {
         this.store = store;
         this.dispatch = store.dispatch;
-        this.streamId = streamId;
         this.signaling = new SignalingChannel(
             this.onSocketMessage,
             ClientType.VIEWER,
@@ -37,12 +34,12 @@ export default class ViewerConnectionHandler {
             this.signaling
         );
 
-        this.getStreamInfo();
+        this.getStreamInfo(streamId);
     }
 
-    async getStreamInfo() {
+    async getStreamInfo(streamId: string) {
         try {
-            const streamInfo = await StreamService.getStreamInfo(this.streamId);
+            const streamInfo = await StreamService.getStreamInfo(streamId);
             this.dispatch(setStreamInfo(streamInfo));
         } catch (e: unknown) {
             let error = e as SimpleErrorResponse;
@@ -83,7 +80,7 @@ export default class ViewerConnectionHandler {
     }
 
     onSocketMessage = async (user: string, message: Message) => {
-        if (this.logLevel === 'debug') {
+        if (import.meta.env.VITE_DEBUG_LEVEL === 'debug') {
             console.log(`got ${message.type} from ${user}`);
         }
         switch (message.type) {
