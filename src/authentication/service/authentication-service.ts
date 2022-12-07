@@ -4,8 +4,8 @@ import { ServerError } from '../../errors/serverError';
 import { appAxios } from '../../services/serviceMiddleware';
 import { UserModel } from '../../user/UserModel';
 
-export const appUrl = `${process.env.REACT_APP_SERVER_URL}/api`;
-export const resourcesUrl = `${process.env.REACT_APP_SERVER_URL}`;
+export const appUrl = `${import.meta.env.VITE_SERVER_URL}/api`;
+export const resourcesUrl = `${import.meta.env.VITE_SERVER_URL}`;
 
 export type LoginResponse = {
     token: string;
