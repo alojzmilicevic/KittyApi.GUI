@@ -16,7 +16,6 @@ import { ViewerPeerConnection } from './viewerPeerCon';
 export default class ViewerConnectionHandler {
     store: EnhancedStore;
     dispatch: AppDispatch;
-    stream: MediaStream | null = null;
     signaling: SignalingChannel | null;
     viewerPeerConnection: ViewerPeerConnection;
 

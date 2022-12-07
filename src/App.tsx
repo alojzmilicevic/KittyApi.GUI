@@ -55,7 +55,6 @@ function App() {
                             <Route element={<ProfilePage />} path={'/profile'} />
                             <Route element={<Streams />} path={'/'}></Route>
                             <Route element={<Stream />} path={'/:stream'} />
-
                         </Route>
                         <Route element={<RedirectRoute user={user} />}>
                             <Route element={<Login />} path={'/login'} />

@@ -90,7 +90,7 @@ export class ViewerPeerConnection {
             console.error('Unable to handle offer, PeerConnection not yet created!');
             return;
         }
-        // TODO what happens if pc is null
+
         await pc.setRemoteDescription(sdp);
 
         const answer = await pc.createAnswer();
