@@ -1,6 +1,5 @@
 export enum MessageTypes {
     INCOMING_CALL = 'incomingCall',
-    CALL = 'call',
     ANSWER = 'answer',
     HANGUP = 'hangup',
     ICE_CANDIDATE = 'iceCandidate',

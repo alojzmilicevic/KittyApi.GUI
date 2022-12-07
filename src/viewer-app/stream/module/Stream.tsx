@@ -19,17 +19,17 @@ function useStream() {
     const { stream } = params as { stream: string };
     useEffect(() => {
         dispatch(init({ streamId: stream }));
-
+        
         return () => {
             dispatch(cleanup());
         }
     }, [dispatch, stream]);
 
     useEffect(() => {
-        if (streamInfo && connectionStatus !== ConnectionStatus.CONNECTED && connectionStatus !== ConnectionStatus.CONNECTING) {
+        if (streamInfo) {
             dispatch(connectToStream());
-        }
-    }, [dispatch, streamInfo, connectionStatus]);
+        }       
+    }, [streamInfo]);
 
 
     return {

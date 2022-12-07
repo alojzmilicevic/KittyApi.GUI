@@ -28,7 +28,6 @@ export default class StreamerConnectionHandler {
         this.signaling = new SignalingChannel(
             this.onSocketMessage,
             ClientType.STREAMER,
-            false
         );
         this.streamerPeerConnection = new StreamerPeerConnection(
             store,

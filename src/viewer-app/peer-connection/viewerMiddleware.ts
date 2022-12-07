@@ -25,7 +25,6 @@ export default class ViewerConnectionHandler {
         this.signaling = new SignalingChannel(
             this.onSocketMessage,
             ClientType.VIEWER,
-            false
         );
         this.viewerPeerConnection = new ViewerPeerConnection(
             store,
@@ -83,9 +82,6 @@ export default class ViewerConnectionHandler {
             console.log(`got ${message.type} from ${user}`);
         }
         switch (message.type) {
-            case MessageTypes.CALL:
-                await this.connectToStream();
-                break;
             case MessageTypes.OFFER:
                 await this.viewerPeerConnection.handleOffer(message);
                 break;

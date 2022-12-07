@@ -1,9 +1,7 @@
 import {
     HttpTransportType,
     HubConnection,
-    HubConnectionBuilder,
-    HubConnectionState,
-    LogLevel
+    HubConnectionBuilder, LogLevel
 } from '@microsoft/signalr';
 import { ClientType, SignalRMessageTypes } from './constants';
 
@@ -13,19 +11,14 @@ class SignalingChannel {
     clientType: string;
     shouldStopConnection: boolean = false;
 
-    constructor(onMessage: any, clientType: ClientType, shouldStartConnection: boolean = true) {
+    constructor(onMessage: any, clientType: ClientType) {
         this.onSocketMessage = onMessage;
         this.clientType = clientType;
-
-        if (shouldStartConnection) {
-            // Even though im awaiting functions inside off the initConnection function the constructor will still be completed.
-            // This means that people using functions can do so even if we aren't connected.
-            // Use Readiness Design Patter to fix this
-            this.init();
-        }
     }
 
     async init() {
+        if (this.connection) return;
+
         const token = localStorage.getItem('token');
         try {
             this.connection = new HubConnectionBuilder()
@@ -37,6 +30,7 @@ class SignalingChannel {
                 .build();
 
             await this.connection.start();
+
             this.connection?.on('ReceiveMessage',
                 (user, message) => this.onSocketMessage(user, message));
 
@@ -44,10 +38,6 @@ class SignalingChannel {
             console.error(error);
         }
 
-        if (this.shouldStopConnection) {
-            this.cleanUpConnection();
-            this.shouldStopConnection = false;
-        }
     }
 
     sendMessageToViewer = async (message: any, user: string) => {
@@ -73,10 +63,6 @@ class SignalingChannel {
             return;
         }
 
-        if (this.connection.state === HubConnectionState.Connecting) {
-            this.shouldStopConnection = true;
-            return;
-        }
         this.connection.off('ReceiveMessage');
         await this.connection.stop();
         this.connection = null;
@@ -84,3 +70,4 @@ class SignalingChannel {
 }
 
 export { SignalingChannel };
+
