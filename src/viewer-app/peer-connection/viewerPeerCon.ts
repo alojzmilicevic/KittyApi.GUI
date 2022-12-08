@@ -33,12 +33,10 @@ export class ViewerPeerConnection {
     }
 
     leaveStream = async () => {
-        if (!this.peer) {
-            return;
-        };
-
+        console.log('LEAVING STREAM nulling peerconnection');
+        
         setLocalVideo(null);
-        this.peer.pc.close();
+        this.peer?.pc.close();
         this.peer = null;
         const s = getStreamInfoSelector(this.store.getState());
 
@@ -52,6 +50,8 @@ export class ViewerPeerConnection {
 
     async connectToStream(streamId: string) {
         if (this.peer) return;
+        console.log("We are creating a new peer connection");
+        
         this.dispatch(
             setConnectionStatus({
                 connectionStatus: ConnectionStatus.CONNECTING,

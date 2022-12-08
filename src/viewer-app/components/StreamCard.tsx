@@ -14,6 +14,7 @@ import { Stream } from '../interface';
 
 interface Props {
     stream: Stream;
+    setShowStreams: () => void;
 }
 
 const StyledTextContent = styled('div')(({ theme }) => ({
@@ -24,13 +25,18 @@ const StyledTextContent = styled('div')(({ theme }) => ({
 
 const StyledCardContent = styled(CardContent)({ display: 'flex' });
 
-const StreamCard = ({ stream }: Props) => {
+const StreamCard = ({ stream, setShowStreams }: Props) => {
     const { streamTitle, streamerName, thumbnail, streamerUsername } = stream;
     const navigate = useNavigate();
 
+    const handleClick = () => {
+        navigate(`${streamerUsername}`);
+        setShowStreams();
+    }
+
     return (
         <Card>
-            <CardActionArea onClick={() => { navigate(`${streamerUsername}`) }}>
+            <CardActionArea onClick={handleClick}>
                 <CardMedia
                     component="img"
                     height="140"

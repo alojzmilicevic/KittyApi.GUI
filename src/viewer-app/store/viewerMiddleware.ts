@@ -12,8 +12,7 @@ export const viewerMiddleware =
     (store: any) => (next: any) => async (action: ViewerAction) => {
         switch (action.type) {
             case init.type:
-                const { streamId } = action.payload as InitAction;
-                client = new ViewerConnectionHandler(store, streamId);
+                client = new ViewerConnectionHandler(store);
                 break;
 
             case cleanup.type:
@@ -21,7 +20,13 @@ export const viewerMiddleware =
                 client = null;
                 break;
 
+            case fetchStreamInfo.type:
+                const { streamId } = action.payload as InitAction;
+                client?.getStreamInfo(streamId);
+                break;
             case leaveStream.type:
+                console.log("CLIENT WHEN LEAVING", client);
+                
                 client?.leaveStream();
                 break;
 
@@ -38,7 +43,8 @@ export const viewerMiddleware =
         return next(action);
     };
 
-export const init = createAction<InitAction>(`${baseAction}/init`);
+export const init = createAction(`${baseAction}/init`);
+export const fetchStreamInfo = createAction<InitAction>(`${baseAction}/fetchStreamInfo`);
 export const cleanup = createAction(`${baseAction}/cleanup`);
 export const connectToStream = createAction(`${baseAction}/leaveStream`);
 export const leaveStream = createAction(`${baseAction}/connectToStream`);

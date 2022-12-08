@@ -50,6 +50,8 @@ class SignalingChannel {
     };
 
     sendMessageToStreamer = async (message: { type: string, payload: any }, sender: string) => {
+        console.log("SENDING MESSAGE TO STREAMER", message);
+        
         if (this.connection) {
             await this.connection.invoke(SignalRMessageTypes.SEND_MESSAGE_TO_STREAMER, sender, message);
         } else {
