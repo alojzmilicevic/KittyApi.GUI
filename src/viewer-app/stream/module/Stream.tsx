@@ -12,7 +12,7 @@ function useStream() {
     const params = useParams();
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-    const { setShowStreams } = useOutletContext();
+    const { setShowStreams } = useOutletContext<{setShowStreams: (showStreams: boolean) => void}>();
 
     const connectionStatus = useAppSelector(getConnectionStatus);
     const streamInfo = useAppSelector(getStreamInfo);
