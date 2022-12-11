@@ -82,7 +82,6 @@ export default class StreamerConnectionHandler {
             const streamId = getStreamInfo(this.store.getState())?.streamId;
             if (streamId) {
                 await StreamerApi.endStream(streamId);
-
             }
 
         } catch (error) {
@@ -94,6 +93,8 @@ export default class StreamerConnectionHandler {
                 })
             );
             this.dispatch(setStreamInfo(undefined));
+            await this.streamerPeerConnection.cleanUp();
+
         }
     }
 
