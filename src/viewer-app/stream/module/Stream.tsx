@@ -5,6 +5,7 @@ import { useWindowSize } from "usehooks-ts";
 import { ConnectionStatus, getConnectionStatus, getStreamInfo } from "../../../store/app";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { VideoContainer } from "../../../video/VideoContainer";
+import { useSetShowStreams } from "../../module/Streams";
 import { connectToStream, fetchStreamInfo, leaveStream } from "../../store/viewerMiddleware";
 
 function useStream() {
@@ -12,7 +13,7 @@ function useStream() {
     const params = useParams();
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-    const { setShowStreams } = useOutletContext<{setShowStreams: (showStreams: boolean) => void}>();
+    const { setShowStreams } = useSetShowStreams();
 
     const connectionStatus = useAppSelector(getConnectionStatus);
     const streamInfo = useAppSelector(getStreamInfo);

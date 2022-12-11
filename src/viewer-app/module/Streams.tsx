@@ -4,7 +4,7 @@ import * as ViewerService from '../service/viewerService';
 import { StreamCard } from '../components/StreamCard';
 import { Stream } from '../interface';
 import { Box, Typography } from '@mui/material';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useOutletContext } from 'react-router-dom';
 import { useAppDispatch } from '../../store/hooks';
 import { cleanup, init } from '../store/viewerMiddleware';
 
@@ -48,7 +48,7 @@ const Streams = () => {
 
     return (
         <>
-            <Outlet context={{setShowStreams: (shouldShow: boolean) => setShowStreams(shouldShow)}}/>
+            <Outlet context={{ setShowStreams: (shouldShow: boolean) => setShowStreams(shouldShow) }} />
             {showStreams &&
                 <Grid
                     container
@@ -67,6 +67,9 @@ const Streams = () => {
 
     );
 };
+
+type ContextType = { setShowStreams: (shouldShowStreams: boolean) => void };
+export const useSetShowStreams = () => useOutletContext<ContextType>();
 
 export { Streams };
 
