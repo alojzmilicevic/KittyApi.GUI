@@ -34,6 +34,8 @@ export default class StreamerConnectionHandler {
             this.dispatch,
             this.signaling
         );
+        this.signaling.init();
+
         // Even though im awaiting functions inside the initClient function the constructor will still be completed.
         // This means that people using functions exposed inside this class can do so even if this class isn't ready.
         // Use Readiness Design Patter to fix this
@@ -48,10 +50,6 @@ export default class StreamerConnectionHandler {
     }
 
     async startStream({ title, thumbnail }: StartStreamInput) {
-        if (!this.stream) {
-            await this.initClient();
-        }
-
         this.dispatch(
             setConnectionStatus({
                 connectionStatus: ConnectionStatus.CONNECTING,
@@ -60,7 +58,6 @@ export default class StreamerConnectionHandler {
 
         try {
             const stream = await StreamerApi.startStream(title, thumbnail);
-            this.signaling.init();
             this.dispatch(setStreamInfo(stream));
             this.dispatch(
                 setConnectionStatus({
@@ -85,23 +82,27 @@ export default class StreamerConnectionHandler {
             const streamId = getStreamInfo(this.store.getState())?.streamId;
             if (streamId) {
                 await StreamerApi.endStream(streamId);
-                this.cleanUpConnection();
-                this.dispatch(
-                    setConnectionStatus({
-                        connectionStatus: ConnectionStatus.IDLE,
-                    })
-                );
-                this.dispatch(setStreamInfo(undefined));
+
             }
+
         } catch (error) {
             console.error(error);
+        } finally {
+            this.dispatch(
+                setConnectionStatus({
+                    connectionStatus: ConnectionStatus.IDLE,
+                })
+            );
+            this.dispatch(setStreamInfo(undefined));
         }
     }
 
-    async cleanUpConnection() {
+    async cleanUp() {
         this.stream?.getTracks()[0].stop();
         this.stream = null;
         await this.signaling.cleanUpConnection();
+        await this.streamerPeerConnection.cleanUp();
+        this.endStream();
     }
 
     async onUserLeftStream(user: string) {
@@ -109,7 +110,7 @@ export default class StreamerConnectionHandler {
     }
 
     logout() {
-        this.cleanUpConnection();
+        this.cleanUp();
     }
 
     onSocketMessage = async (user: string, message: Message) => {

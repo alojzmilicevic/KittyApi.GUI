@@ -53,8 +53,9 @@ function App() {
                         <Route element={<ProtectedRoute user={user} />}>
                             <Route element={<StreamerApp />} path={'/streamer'} />
                             <Route element={<ProfilePage />} path={'/profile'} />
-                            <Route element={<Streams />} path={'/'}></Route>
-                            <Route element={<Stream />} path={'/:stream'} />
+                            <Route element={<Streams />} path={'/'}>
+                                <Route element={<Stream />} path={'/:stream'} />
+                            </Route>
                         </Route>
                         <Route element={<RedirectRoute user={user} />}>
                             <Route element={<Login />} path={'/login'} />

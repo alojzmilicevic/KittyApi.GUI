@@ -9,7 +9,8 @@ class SignalingChannel {
     connection: HubConnection | null = null;
     onSocketMessage: (user: any, message: any) => void;
     clientType: string;
-    shouldStopConnection: boolean = false;
+    // @ts-expect-error
+    startPromise: Promise<void>;
 
     constructor(onMessage: any, clientType: ClientType) {
         this.onSocketMessage = onMessage;
@@ -17,8 +18,6 @@ class SignalingChannel {
     }
 
     async init() {
-        if (this.connection) return;
-
         const token = localStorage.getItem('token');
         try {
             this.connection = new HubConnectionBuilder()
@@ -29,13 +28,14 @@ class SignalingChannel {
                 })
                 .build();
 
-            await this.connection.start();
-
-            this.connection?.on('ReceiveMessage',
-                (user, message) => this.onSocketMessage(user, message));
+            this.startPromise = this.connection.start();
+            this.startPromise.then(() => {
+                this.connection?.on('ReceiveMessage',
+                    (user, message) => this.onSocketMessage(user, message));
+            });
 
         } catch (error) {
-            console.error(error);
+            //console.error(error);
         }
 
     }
@@ -59,13 +59,12 @@ class SignalingChannel {
     };
 
     async cleanUpConnection() {
-        if (!this.connection) {
-            return;
-        }
+        this.connection?.off('ReceiveMessage');
+        this.startPromise?.then(() => {
+            this.connection?.stop();
+            this.connection = null;
 
-        this.connection.off('ReceiveMessage');
-        await this.connection.stop();
-        this.connection = null;
+        });
     }
 }
 

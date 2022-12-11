@@ -1,39 +1,41 @@
 import { Button, styled } from "@mui/material";
 import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { useWindowSize } from "usehooks-ts";
 import { ConnectionStatus, getConnectionStatus, getStreamInfo } from "../../../store/app";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { VideoContainer } from "../../../video/VideoContainer";
-import { cleanup, connectToStream, init } from "../../store/viewerMiddleware";
+import { connectToStream, fetchStreamInfo, leaveStream } from "../../store/viewerMiddleware";
 
 function useStream() {
     const { width, height } = useWindowSize();
     const params = useParams();
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+    const { setShowStreams } = useOutletContext();
 
     const connectionStatus = useAppSelector(getConnectionStatus);
     const streamInfo = useAppSelector(getStreamInfo);
 
     const { stream } = params as { stream: string };
     useEffect(() => {
-        dispatch(init({ streamId: stream }));
-        
-        return () => {
-            dispatch(cleanup());
-        }
+        setShowStreams(false);
+        dispatch(fetchStreamInfo({ streamId: stream }));
     }, [dispatch, stream]);
 
     useEffect(() => {
         if (streamInfo) {
             dispatch(connectToStream());
-        }       
+        }
     }, [streamInfo]);
 
 
     return {
-        connectionStatus, leaveStream: () => navigate('/'), width, height
+        connectionStatus, leaveStream: () => {
+            setShowStreams(true);
+            dispatch(leaveStream());
+            return navigate('/');
+        }, width, height
     };
 }
 
