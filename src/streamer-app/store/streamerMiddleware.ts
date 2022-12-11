@@ -12,7 +12,7 @@ export const streamerMiddleware =
                 client = new StreamerConnectionHandler(store);
                 break;
             case cleanup.type:
-                client?.cleanUpConnection();
+                client?.cleanUp();
                 client = null;
                 break;
             case logout.type:

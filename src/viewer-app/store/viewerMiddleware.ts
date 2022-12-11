@@ -16,7 +16,7 @@ export const viewerMiddleware =
                 break;
 
             case cleanup.type:
-                client?.leaveStream();
+                client?.cleanUp();
                 client = null;
                 break;
 
@@ -25,8 +25,6 @@ export const viewerMiddleware =
                 client?.getStreamInfo(streamId);
                 break;
             case leaveStream.type:
-                console.log("CLIENT WHEN LEAVING", client);
-                
                 client?.leaveStream();
                 break;
 

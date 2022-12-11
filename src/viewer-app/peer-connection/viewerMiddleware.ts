@@ -22,7 +22,7 @@ export default class ViewerConnectionHandler {
     constructor(store: EnhancedStore) {
         this.store = store;
         this.dispatch = store.dispatch;
-        
+
         this.signaling = new SignalingChannel(
             this.onSocketMessage,
             ClientType.VIEWER,
@@ -56,20 +56,26 @@ export default class ViewerConnectionHandler {
     }
 
     async connectToStream() {
-        console.log("Connecting to stream");
-        
+        const streamState = getConnectionStatus(this.store.getState());
+        if (streamState !== ConnectionStatus.IDLE) {
+            return;
+        }
         if (this.signaling) {
             const streamInfo = getStreamInfoSelector(this.store.getState());
-            console.log("STREAMINFO WHEN CRETING STREAM", streamInfo);
-            
             await this.viewerPeerConnection.connectToStream(streamInfo?.streamId!);
         } else {
             console.error('Error when connecting to stream, signaling is null');
         }
     }
 
+    async cleanUp() {
+        await this.leaveStream();
+        this.signaling?.cleanUpConnection();
+    }
+
+
     async leaveStream() {
-        if(this.viewerPeerConnection.peer) {
+        if (this.viewerPeerConnection.peer) {
             await this.viewerPeerConnection.leaveStream();
         }
     }

@@ -33,8 +33,6 @@ export class ViewerPeerConnection {
     }
 
     leaveStream = async () => {
-        console.log('LEAVING STREAM nulling peerconnection');
-        
         setLocalVideo(null);
         this.peer?.pc.close();
         this.peer = null;
@@ -50,7 +48,6 @@ export class ViewerPeerConnection {
 
     async connectToStream(streamId: string) {
         if (this.peer) return;
-        console.log("We are creating a new peer connection");
         
         this.dispatch(
             setConnectionStatus({
@@ -107,7 +104,7 @@ export class ViewerPeerConnection {
         if (this.peer?.pc) {
             await this.peer?.pc.addIceCandidate(iceCandidate);
         } else {
-            console.error('Can\'t handle ice candidates PeerConnection not yet created!');
+            console.error('Unable to handle ice candidates PeerConnection not yet created!');
         }
     }
 }

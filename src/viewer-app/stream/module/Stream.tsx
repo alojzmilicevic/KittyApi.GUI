@@ -25,8 +25,6 @@ function useStream() {
 
     useEffect(() => {
         if (streamInfo) {
-            console.log("DISPATCHING CONNECT");
-            
             dispatch(connectToStream());
         }
     }, [streamInfo]);

@@ -38,6 +38,7 @@ export class StreamerPeerConnection {
 
         pc.onicecandidate = async (ev: RTCPeerConnectionIceEvent) => {
             if (ev.candidate) {
+                // TODO need to make sure that answer has been received before sending ice candidate
                 await this.signaler.sendMessageToViewer(
                     {
                         type: MessageTypes.ICE_CANDIDATE,
@@ -63,5 +64,10 @@ export class StreamerPeerConnection {
     async onAnswer(user: string, sdp: RTCSessionDescriptionInit) {
         const actualConn = this.pcs.find((x) => x.from === user);
         await actualConn?.pc.setRemoteDescription(sdp);
+    }
+
+    async cleanUp() {
+        this.pcs.forEach((x) => x.pc.close());
+        this.pcs = [];
     }
 }
