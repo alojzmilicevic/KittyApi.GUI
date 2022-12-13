@@ -4,7 +4,7 @@ import {
     HubConnectionBuilder, LogLevel
 } from '@microsoft/signalr';
 import { UserModel } from '../../user/UserModel';
-import { AnswerMessage, ClientType, Hubmethod, IceCandidateMessage, MessageTypes, OfferMessage, Payload } from './constants';
+import { ClientType, Hubmethod, Hubs, MessageTypes, PartialAnswerMessage, Payload, SdpMessage } from './constants';
 
 class SignalingChannel {
     connection: HubConnection | null = null;
@@ -31,18 +31,20 @@ class SignalingChannel {
                 .build();
 
             this.startPromise = this.connection.start();
-            this.startPromise.then(() => this.connection?.on('ReceiveMessage', this.onSocketMessage));
+            this.startPromise.then(() => this.connection?.on(Hubs.ReceiveMessage, this.onSocketMessage));
 
         } catch (error) {
             console.error(error);
         }
     }
 
-    sendOffer = async (offer: Omit<OfferMessage, 'type' | 'sender'>) => this.sendMessage(Hubmethod.SEND_OFFER,
+    sendOffer = async (offer: SdpMessage) => this.sendMessage(Hubmethod.SEND_OFFER,
         { ...offer, type: MessageTypes.OFFER, sender: ClientType.STREAMER });
-    sendAnswer = async (answer: Omit<AnswerMessage, 'type' | 'sender' | 'receiver'>) => this.sendMessage(Hubmethod.SEND_ANSWER,
+
+    sendAnswer = async (answer: PartialAnswerMessage) => this.sendMessage(Hubmethod.SEND_ANSWER,
         { ...answer, type: MessageTypes.ANSWER, receiver: ClientType.STREAMER, sender: this.user.userId, });
-    sendIceCandidate = async (iceCandidate: Omit<IceCandidateMessage, 'type' | 'sender'>) => this.sendMessage(Hubmethod.SEND_ICE_CANDIDATE,
+
+    sendIceCandidate = async (iceCandidate: SdpMessage) => this.sendMessage(Hubmethod.SEND_ICE_CANDIDATE,
         { ...iceCandidate, type: MessageTypes.ICE_CANDIDATE, sender: ClientType.STREAMER });
 
     private sendMessage = async (hubmethod: Hubmethod, payload: Payload) => {
@@ -61,7 +63,7 @@ class SignalingChannel {
     };
 
     async cleanUpConnection() {
-        this.connection?.off('ReceiveMessage');
+        this.connection?.off(Hubs.ReceiveMessage);
         this.startPromise?.then(() => {
             this.connection?.stop();
             this.connection = null;

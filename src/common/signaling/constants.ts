@@ -11,6 +11,10 @@ export enum ClientType {
     STREAMER = 'streamer',
 }
 
+export enum Hubs {
+    ReceiveMessage = 'ReceiveMessage',
+}
+
 export interface BaseHubMessage {
     sender: string,
     receiver: string,
@@ -41,6 +45,9 @@ export interface IceCandidateMessage extends BaseHubMessage {
     sdpMid: string | null,
     sdpMLineIndex: number | null,
 }
+
+export type SdpMessage = Omit<IceCandidateMessage, 'type' | 'sender'>
+export type PartialAnswerMessage = Omit<AnswerMessage, 'type' | 'sender' | 'receiver'>
 
 export enum Hubmethod {
     SEND_OFFER = "SendOfferMessage",
