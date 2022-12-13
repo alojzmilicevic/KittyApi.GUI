@@ -1,6 +1,6 @@
 import { EnhancedStore } from '@reduxjs/toolkit';
 import { SimpleErrorResponse } from '../../errors/errorFactory';
-import { ClientType, Message, MessageTypes } from '../../common/signaling/constants';
+import { BaseHubMessage, ClientType, IceCandidateMessage, MessageTypes, OfferMessage, Payload } from '../../common/signaling/constants';
 import { SignalingChannel } from '../../common/signaling/signaling';
 import {
     ConnectionStatus,
@@ -8,6 +8,7 @@ import {
     setError,
     setStreamInfo,
     getStreamInfo as getStreamInfoSelector,
+    getUser,
 } from '../../store/app';
 import { AppDispatch } from '../../store/store';
 import * as StreamService from '../../services/streamService';
@@ -26,8 +27,8 @@ export default class ViewerConnectionHandler {
         this.signaling = new SignalingChannel(
             this.onSocketMessage,
             ClientType.VIEWER,
+            getUser(this.store.getState())!
         );
-        this.signaling.init();
         this.viewerPeerConnection = new ViewerPeerConnection(
             store,
             this.dispatch,
@@ -87,16 +88,20 @@ export default class ViewerConnectionHandler {
         }
     }
 
-    onSocketMessage = async (user: string, message: Message) => {
+    onSocketMessage = async (message: Payload) => {
+        const { sender } = message as BaseHubMessage;
         if (import.meta.env.VITE_DEBUG_LEVEL === 'debug') {
-            console.log(`got ${message.type} from ${user}`);
+            console.log(`got ${message.type} from ${sender}`);
         }
+
         switch (message.type) {
             case MessageTypes.OFFER:
-                await this.viewerPeerConnection.handleOffer(message);
+                const offerMessage = message as OfferMessage;
+                await this.viewerPeerConnection.handleOffer({ type: message.type, sdp: offerMessage.sdp });
                 break;
             case MessageTypes.ICE_CANDIDATE:
-                await this.viewerPeerConnection.onIceCandidate(message.payload);
+                const iceMessage = message as IceCandidateMessage;
+                await this.viewerPeerConnection.onIceCandidate({ ...iceMessage });
                 break;
         }
     };

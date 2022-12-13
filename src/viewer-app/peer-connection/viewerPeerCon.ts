@@ -1,19 +1,18 @@
-import { MessageTypes } from '../../common/signaling/constants';
 import { EnhancedStore } from '@reduxjs/toolkit';
-import { AppDispatch } from '../../store/store';
-import { SignalingChannel } from '../../common/signaling/signaling';
 import { IceServerConfig } from '../../common/peer-connection/constants';
 import {
     onIceConnectionStateChange,
     setLocalVideo,
 } from '../../common/peer-connection/util';
+import { SignalingChannel } from '../../common/signaling/signaling';
 import {
     ConnectionStatus,
+    getStreamInfo as getStreamInfoSelector,
     getUser,
     setConnectionStatus,
     setStreamInfo,
-    getStreamInfo as getStreamInfoSelector,
 } from '../../store/app';
+import { AppDispatch } from '../../store/store';
 import * as ViewerService from '../service/viewerService';
 
 export class ViewerPeerConnection {
@@ -21,7 +20,7 @@ export class ViewerPeerConnection {
     store: EnhancedStore;
     dispatch: AppDispatch;
     signaler: SignalingChannel;
-
+    
     constructor(
         store: EnhancedStore,
         dispatch: AppDispatch,
@@ -48,7 +47,7 @@ export class ViewerPeerConnection {
 
     async connectToStream(streamId: string) {
         if (this.peer) return;
-        
+
         this.dispatch(
             setConnectionStatus({
                 connectionStatus: ConnectionStatus.CONNECTING,
@@ -80,7 +79,7 @@ export class ViewerPeerConnection {
         await ViewerService.joinStream(streamId);
     }
 
-    async handleOffer(message: any) {
+    async handleOffer(message: RTCSessionDescriptionInit) {
         const sdp = new RTCSessionDescription(message);
         const pc = this.peer?.pc;
         if (!pc) {
@@ -92,15 +91,11 @@ export class ViewerPeerConnection {
 
         const answer = await pc.createAnswer();
         await pc.setLocalDescription(answer);
-        const user = getUser(this.store.getState())!;
 
-        await this.signaler.sendMessageToStreamer(
-            { type: MessageTypes.ANSWER, payload: answer },
-            user.userId
-        );
+        await this.signaler.sendAnswer({ sdp: answer.sdp! });
     }
 
-    async onIceCandidate(iceCandidate: any) {
+    async onIceCandidate(iceCandidate: RTCIceCandidateInit) {
         if (this.peer?.pc) {
             await this.peer?.pc.addIceCandidate(iceCandidate);
         } else {

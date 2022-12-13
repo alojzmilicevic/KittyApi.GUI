@@ -1,11 +1,10 @@
 import { EnhancedStore } from '@reduxjs/toolkit';
-import { AppDispatch } from '../../store/store';
-import { SignalingChannel } from '../../common/signaling/signaling';
-import { MessageTypes } from '../../common/signaling/constants';
 import { IceServerConfig } from '../../common/peer-connection/constants';
 import { onIceConnectionStateChange } from '../../common/peer-connection/util';
-import { getUser, setStreamInfo } from '../../store/app';
+import { SignalingChannel } from '../../common/signaling/signaling';
 import * as StreamService from '../../services/streamService';
+import { getUser, setStreamInfo } from '../../store/app';
+import { AppDispatch } from '../../store/store';
 
 export class StreamerPeerConnection {
     pcs: { from: string; pc: RTCPeerConnection }[] = [];
@@ -33,23 +32,23 @@ export class StreamerPeerConnection {
         this.dispatch(setStreamInfo(streamInfo));
     }
 
-    async onIncomingCall(user: string, mediaStream: MediaStream) {
+    async onIncomingCall(peer: string, mediaStream: MediaStream) {
         const pc = new RTCPeerConnection(IceServerConfig);
 
         pc.onicecandidate = async (ev: RTCPeerConnectionIceEvent) => {
             if (ev.candidate) {
+                const { sdpMid, sdpMLineIndex, candidate } = ev.candidate;
                 // TODO need to make sure that answer has been received before sending ice candidate
-                await this.signaler.sendMessageToViewer(
-                    {
-                        type: MessageTypes.ICE_CANDIDATE,
-                        payload: ev.candidate,
-                    },
-                    user
-                );
+                await this.signaler.sendIceCandidate({
+                    receiver: peer,
+                    candidate,
+                    sdpMid,
+                    sdpMLineIndex
+                });
             }
         };
 
-        onIceConnectionStateChange(() => this.onUserLeftStream(user), pc);
+        onIceConnectionStateChange(() => this.onUserLeftStream(peer), pc);
 
         mediaStream
             .getTracks()
@@ -57,8 +56,8 @@ export class StreamerPeerConnection {
 
         const offer = await pc.createOffer();
         await pc.setLocalDescription(offer);
-        await this.signaler.sendMessageToViewer(offer, user);
-        this.pcs.push({ pc, from: user });
+        await this.signaler.sendOffer({ receiver: peer, sdp: offer.sdp! })
+        this.pcs.push({ pc, from: peer });
     }
 
     async onAnswer(user: string, sdp: RTCSessionDescriptionInit) {

@@ -1,9 +1,9 @@
 import { EnhancedStore } from '@reduxjs/toolkit';
 import { MediaConstraints } from '../../common/peer-connection/constants';
 import { setLocalVideo } from '../../common/peer-connection/util';
-import * as StreamService from '../../services/streamService';
-import { ClientType, Message, MessageTypes } from '../../common/signaling/constants';
+import { AnswerMessage, BaseHubMessage, ClientType, MessageTypes, Payload } from '../../common/signaling/constants';
 import { SignalingChannel } from '../../common/signaling/signaling';
+import * as StreamService from '../../services/streamService';
 import {
     ConnectionStatus,
     getStreamInfo,
@@ -28,13 +28,13 @@ export default class StreamerConnectionHandler {
         this.signaling = new SignalingChannel(
             this.onSocketMessage,
             ClientType.STREAMER,
+            getUser(this.store.getState())!
         );
         this.streamerPeerConnection = new StreamerPeerConnection(
             store,
             this.dispatch,
             this.signaling
         );
-        this.signaling.init();
 
         // Even though im awaiting functions inside the initClient function the constructor will still be completed.
         // This means that people using functions exposed inside this class can do so even if this class isn't ready.
@@ -114,16 +114,18 @@ export default class StreamerConnectionHandler {
         this.cleanUp();
     }
 
-    onSocketMessage = async (user: string, message: Message) => {
+    onSocketMessage = async (message: Payload) => {
+        const { sender } = message as BaseHubMessage;
         if (import.meta.env.VITE_DEBUG_LEVEL === 'debug') {
             if (message.type !== MessageTypes.OFFER && message.type !== MessageTypes.ICE_CANDIDATE) {
-                console.log(`got ${message.type} from ${user}`);
+                console.log(`got ${message.type} from ${sender}`);
             }
         }
+
         switch (message.type) {
             case MessageTypes.INCOMING_CALL:
                 await this.streamerPeerConnection.onIncomingCall(
-                    user,
+                    sender,
                     this.stream!
                 );
 
@@ -133,12 +135,12 @@ export default class StreamerConnectionHandler {
                 break;
             case MessageTypes.ANSWER:
                 await this.streamerPeerConnection.onAnswer(
-                    user,
-                    message.payload as RTCSessionDescriptionInit
+                    sender,
+                    { sdp: (message as AnswerMessage).sdp, type: message.type },
                 );
                 break;
             case MessageTypes.HANGUP:
-                await this.onUserLeftStream(user);
+                await this.onUserLeftStream(sender);
                 break;
         }
     };
