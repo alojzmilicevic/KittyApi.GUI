@@ -9,6 +9,8 @@ import {
     setStreamInfo,
     getStreamInfo as getStreamInfoSelector,
     getUser,
+    setAppStatus,
+    AppStatus,
 } from '../../store/app';
 import { AppDispatch } from '../../store/store';
 import * as StreamService from '../../services/streamService';
@@ -23,6 +25,7 @@ export default class ViewerConnectionHandler {
     constructor(store: EnhancedStore) {
         this.store = store;
         this.dispatch = store.dispatch;
+        this.setAppStatus(AppStatus.INITIALIZING);
 
         this.signaling = new SignalingChannel(
             this.onSocketMessage,
@@ -34,11 +37,19 @@ export default class ViewerConnectionHandler {
             this.dispatch,
             this.signaling
         );
+
+        this.setAppStatus(AppStatus.INITIALIZED);
+    }
+
+    setAppStatus(appStatus: AppStatus) {
+        this.dispatch(setAppStatus(appStatus));
     }
 
     async getStreamInfo(streamId: string) {
+        this.setAppStatus(AppStatus.FETCHING_STREAM_INFO)
         try {
             const streamInfo = await StreamService.getStreamInfo(streamId);
+
             this.dispatch(setStreamInfo(streamInfo));
         } catch (e: unknown) {
             let error = e as SimpleErrorResponse;
@@ -54,6 +65,7 @@ export default class ViewerConnectionHandler {
                 })
             );
         }
+        this.setAppStatus(AppStatus.FETCHED_STREAM_INFO);
     }
 
     async connectToStream() {

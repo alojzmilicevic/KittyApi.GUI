@@ -1,6 +1,6 @@
 import { Button, styled } from "@mui/material";
 import { useEffect } from "react";
-import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useWindowSize } from "usehooks-ts";
 import { ConnectionStatus, getConnectionStatus, getStreamInfo } from "../../../store/app";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";

@@ -6,9 +6,11 @@ import {
 } from '../../common/peer-connection/util';
 import { SignalingChannel } from '../../common/signaling/signaling';
 import {
+    AppStatus,
     ConnectionStatus,
     getStreamInfo as getStreamInfoSelector,
     getUser,
+    setAppStatus,
     setConnectionStatus,
     setStreamInfo,
 } from '../../store/app';
@@ -42,6 +44,7 @@ export class ViewerPeerConnection {
         this.dispatch(
             setConnectionStatus({ connectionStatus: ConnectionStatus.IDLE })
         );
+        this.dispatch(setAppStatus(AppStatus.INITIALIZED))
         this.dispatch(setStreamInfo(undefined));
     };
 

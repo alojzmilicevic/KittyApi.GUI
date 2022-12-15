@@ -4,7 +4,7 @@ import {
     HubConnectionBuilder, LogLevel
 } from '@microsoft/signalr';
 import { UserModel } from '../../user/UserModel';
-import { ClientType, Hubmethod, Hubs, MessageTypes, PartialAnswerMessage, Payload, SdpMessage } from './constants';
+import { ClientType, Hubmethod, Hubs, MessageTypes, PartialAnswerMessage, PartialIceCandidateMessage, PartialOfferMessage, Payload } from './constants';
 
 class SignalingChannel {
     connection: HubConnection | null = null;
@@ -38,13 +38,13 @@ class SignalingChannel {
         }
     }
 
-    sendOffer = async (offer: SdpMessage) => this.sendMessage(Hubmethod.SEND_OFFER,
+    sendOffer = async (offer: PartialOfferMessage) => this.sendMessage(Hubmethod.SEND_OFFER,
         { ...offer, type: MessageTypes.OFFER, sender: ClientType.STREAMER });
 
     sendAnswer = async (answer: PartialAnswerMessage) => this.sendMessage(Hubmethod.SEND_ANSWER,
         { ...answer, type: MessageTypes.ANSWER, receiver: ClientType.STREAMER, sender: this.user.userId, });
 
-    sendIceCandidate = async (iceCandidate: SdpMessage) => this.sendMessage(Hubmethod.SEND_ICE_CANDIDATE,
+    sendIceCandidate = async (iceCandidate: PartialIceCandidateMessage) => this.sendMessage(Hubmethod.SEND_ICE_CANDIDATE,
         { ...iceCandidate, type: MessageTypes.ICE_CANDIDATE, sender: ClientType.STREAMER });
 
     private sendMessage = async (hubmethod: Hubmethod, payload: Payload) => {

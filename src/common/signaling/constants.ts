@@ -46,8 +46,9 @@ export interface IceCandidateMessage extends BaseHubMessage {
     sdpMLineIndex: number | null,
 }
 
-export type SdpMessage = Omit<IceCandidateMessage, 'type' | 'sender'>
+export type PartialIceCandidateMessage = Omit<IceCandidateMessage, 'type' | 'sender'>
 export type PartialAnswerMessage = Omit<AnswerMessage, 'type' | 'sender' | 'receiver'>
+export type PartialOfferMessage = Omit<OfferMessage, 'type' | 'sender'>
 
 export enum Hubmethod {
     SEND_OFFER = "SendOfferMessage",
