@@ -1,6 +1,6 @@
 import { EnhancedStore } from '@reduxjs/toolkit';
 import { SimpleErrorResponse } from '../../errors/errorFactory';
-import { BaseHubMessage, ClientType, IceCandidateMessage, MessageTypes, OfferMessage, Payload } from '../../common/signaling/constants';
+import { BaseHubMessage, ClientType, IceCandidateMessage, MessageTypes, OfferMessage, Payload, StreamsUpdatedMessage } from '../../common/signaling/constants';
 import { SignalingChannel } from '../../common/signaling/signaling';
 import {
     ConnectionStatus,
@@ -11,9 +11,11 @@ import {
     getUser,
     setAppStatus,
     AppStatus,
+    setStreams,
 } from '../../store/app';
 import { AppDispatch } from '../../store/store';
 import * as StreamService from '../../services/streamService';
+import * as ViewerService from '../service/viewerService';
 import { ViewerPeerConnection } from './viewerPeerCon';
 
 export default class ViewerConnectionHandler {
@@ -39,6 +41,13 @@ export default class ViewerConnectionHandler {
         );
 
         this.setAppStatus(AppStatus.INITIALIZED);
+        this.fetchAllStreams();
+    }
+
+    async fetchAllStreams() {
+        this.dispatch(setAppStatus(AppStatus.FETCHING_STREAMS));
+        const streams = await ViewerService.getStreams();
+        this.dispatch(setStreams(streams));
     }
 
     setAppStatus(appStatus: AppStatus) {
@@ -115,6 +124,12 @@ export default class ViewerConnectionHandler {
                 const iceMessage = message as IceCandidateMessage;
                 await this.viewerPeerConnection.onIceCandidate({ ...iceMessage });
                 break;
+
+            case MessageTypes.STREAMS_UPDATED:
+                const streamCreatedMessage = message as StreamsUpdatedMessage;
+                this.dispatch(setStreams(streamCreatedMessage.streams));
+                break;
+
         }
     };
 }

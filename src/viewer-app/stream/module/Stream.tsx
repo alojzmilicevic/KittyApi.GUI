@@ -1,6 +1,6 @@
 import { Button, styled } from "@mui/material";
 import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useWindowSize } from "usehooks-ts";
 import { ConnectionStatus, getConnectionStatus, getStreamInfo } from "../../../store/app";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
@@ -12,7 +12,6 @@ function useStream() {
     const { width, height } = useWindowSize();
     const params = useParams();
     const dispatch = useAppDispatch();
-    const navigate = useNavigate();
     const { setShowStreams } = useSetShowStreams();
 
     const connectionStatus = useAppSelector(getConnectionStatus);
@@ -32,11 +31,13 @@ function useStream() {
 
 
     return {
-        connectionStatus, leaveStream: () => {
+        leaveStream: () => {
             setShowStreams(true);
             dispatch(leaveStream());
-            return navigate('/');
-        }, width, height
+        },
+        width,
+        connectionStatus,
+        height,
     };
 }
 

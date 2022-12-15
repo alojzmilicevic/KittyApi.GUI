@@ -2,6 +2,7 @@ import { createAction, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from './store';
 import { UserModel } from '../user/UserModel';
 import { SimpleErrorResponse } from '../errors/errorFactory';
+import { Stream } from '../viewer-app/interface';
 
 export type StreamInfo = {
     streamId: string;
@@ -38,6 +39,7 @@ type State = {
     streamInfo?: StreamInfo;
     appError?: AppError;
     appStatus: AppStatus;
+    streams: Stream[];
 };
 
 const initialState: State = {
@@ -45,6 +47,7 @@ const initialState: State = {
     appStatus: AppStatus.IDLE,
     user: undefined,
     streamInfo: undefined,
+    streams: [],
 };
 
 export const app = createSlice({
@@ -68,6 +71,13 @@ export const app = createSlice({
             { payload }: PayloadAction<AppStatus>
         ) => {
             state.appStatus = payload;
+        },
+        setStreams: (
+            state: State,
+            { payload }: PayloadAction<Stream[]>
+        ) => {
+            state.streams = payload;
+            state.appStatus = AppStatus.FETCHED_STREAMS;
         },
         setStreamInfo: (
             state,
@@ -93,8 +103,9 @@ export const getConnectionStatus = (state: RootState) =>
 
 export const getError = (state: RootState) => state.app.appError;
 export const getAppStatus = (state: RootState) => state.app.appStatus;
+export const getStreams = (state: RootState) => state.app.streams;
 
 // Action creators are generated for each case reducer function
-export const { setConnectionStatus, setUserInfo, setStreamInfo, setError, setAppStatus } =
+export const { setConnectionStatus, setUserInfo, setStreamInfo, setError, setAppStatus, setStreams } =
     app.actions;
 export const logout = createAction('app/logout');

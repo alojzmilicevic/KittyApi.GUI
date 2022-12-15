@@ -22,7 +22,7 @@ export class ViewerPeerConnection {
     store: EnhancedStore;
     dispatch: AppDispatch;
     signaler: SignalingChannel;
-    
+
     constructor(
         store: EnhancedStore,
         dispatch: AppDispatch,
@@ -39,13 +39,19 @@ export class ViewerPeerConnection {
         this.peer = null;
         const s = getStreamInfoSelector(this.store.getState());
 
-        await ViewerService.leaveStream(s?.streamId!);
+        try {
+            await ViewerService.leaveStream(s?.streamId!);
 
-        this.dispatch(
-            setConnectionStatus({ connectionStatus: ConnectionStatus.IDLE })
-        );
-        this.dispatch(setAppStatus(AppStatus.INITIALIZED))
-        this.dispatch(setStreamInfo(undefined));
+        } catch (e) {
+            console.error(e);
+        } finally {
+            this.dispatch(
+                setConnectionStatus({ connectionStatus: ConnectionStatus.IDLE })
+            );
+            this.dispatch(setAppStatus(AppStatus.INITIALIZED))
+            this.dispatch(setStreamInfo(undefined));
+            window.location.replace('/');
+        }
     };
 
     async connectToStream(streamId: string) {
@@ -75,6 +81,11 @@ export class ViewerPeerConnection {
                         })
                     );
                     break;
+
+                case 'disconnected':
+                case 'failed':
+                case 'closed':
+                    this.leaveStream();
             }
         };
         pc.ontrack = (ev: RTCTrackEvent) => setLocalVideo(ev.streams[0]);

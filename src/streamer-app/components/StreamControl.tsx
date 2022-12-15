@@ -19,7 +19,7 @@ const StreamControl = () => {
             fullWidth
             endIcon={<Stop />}
             onClick={() => dispatch(endStream())}>
-            Stop Stream
+            End Stream
         </Button>
         }
     </>

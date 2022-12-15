@@ -1,9 +1,12 @@
+import { Stream } from "../../viewer-app/interface";
+
 export enum MessageTypes {
     INCOMING_CALL = 'incomingCall',
     ANSWER = 'answer',
     HANGUP = 'hangup',
     ICE_CANDIDATE = 'iceCandidate',
     OFFER = 'offer',
+    STREAMS_UPDATED = 'streamsUpdated',
 }
 
 export enum ClientType {
@@ -44,6 +47,11 @@ export interface IceCandidateMessage extends BaseHubMessage {
     candidate: string,
     sdpMid: string | null,
     sdpMLineIndex: number | null,
+}
+
+export interface StreamsUpdatedMessage extends BaseHubMessage {
+    type: MessageTypes,
+    streams: Stream[],
 }
 
 export type PartialIceCandidateMessage = Omit<IceCandidateMessage, 'type' | 'sender'>
