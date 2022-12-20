@@ -8,7 +8,7 @@ export function useApp() {
     const [ready, setReady] = useState(false);
     const dispatch = useAppDispatch();
     const user = useAppSelector(getUser);
-    const error = useAppSelector(getError);
+    const error = useAppSelector(getError); 
 
     const logout = useCallback(() => {
         dispatch(logoutAction())

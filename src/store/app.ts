@@ -92,6 +92,10 @@ export const app = createSlice({
         setError: (state, action: PayloadAction<AppError | undefined>) => {
             state.appError = action.payload;
         },
+        logoutUser: (state) => {
+            state.user = undefined;
+            localStorage.removeItem('token');
+        }
     },
 });
 
@@ -106,6 +110,6 @@ export const getAppStatus = (state: RootState) => state.app.appStatus;
 export const getStreams = (state: RootState) => state.app.streams;
 
 // Action creators are generated for each case reducer function
-export const { setConnectionStatus, setUserInfo, setStreamInfo, setError, setAppStatus, setStreams } =
+export const { setConnectionStatus, setUserInfo, setStreamInfo, setError, setAppStatus, setStreams, logoutUser } =
     app.actions;
 export const logout = createAction('app/logout');

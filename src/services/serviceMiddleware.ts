@@ -1,22 +1,32 @@
-import axios from "axios";
+import axios, { AxiosError, AxiosResponse } from "axios";
 
 export const appAxios = axios.create();
 
-appAxios.interceptors.request.use(
-    (req) => {
+export const setupAxiosInterceptors = (onAuthenticationFailed: () => void) => {
+    const onRequestError = (error: AxiosError) => Promise.reject(error);
+    const onRequestSuccess = (config: any) => {
         const token = localStorage.getItem('token');
 
-        const controller = new AbortController();
-        if (!token) {
-            controller.abort();
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        } else {
+            const control = new AbortController();
+            control.abort();
+            config.signal = control.signal;
         }
-        return {
-            ...req,
-            signal: controller.signal,
-            headers: { ...req.headers, Authorization: `Bearer ${token}` },
-        };
-    },
-    (error) => {
+        
+        return config;
+    };
+
+
+    const onResponseSuccess = (response: AxiosResponse) => response;
+    const onResponseError = (error: AxiosError) => {
+        if (error.response?.status === 401) {
+            onAuthenticationFailed();
+        }
         return Promise.reject(error);
-    }
-);
+    };
+
+    appAxios.interceptors.request.use(onRequestSuccess, onRequestError);
+    appAxios.interceptors.response.use(onResponseSuccess, onResponseError);
+};
