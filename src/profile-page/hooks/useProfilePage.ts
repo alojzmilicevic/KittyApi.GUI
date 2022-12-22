@@ -1,10 +1,7 @@
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { getUser, setUserInfo } from '../../store/app';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import {
-    changeUserName,
-    checkUsername,
-} from '../../authentication/service/authentication-service';
+import AuthService from '../../authentication/service/authentication-service';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useState } from 'react';
@@ -22,7 +19,7 @@ const validateUsername = async (
 
     setLoading(true);
 
-    const res = await checkUsername(value);
+    const res = await AuthService.checkUsername(value);
     setLoading(false);
     return !res.data;
 };
@@ -55,7 +52,7 @@ export function useProfilePage() {
 
     const onSubmit: SubmitHandler<IProfileInput> = async (data) => {
         try {
-            const res = await changeUserName(data.username);
+            const res = await AuthService.changeUserName(data.username);
             localStorage.setItem('token', res.token);
             dispatch(setUserInfo(res.user));
             reset();

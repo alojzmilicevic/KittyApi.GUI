@@ -3,6 +3,7 @@ import { RootState } from './store';
 import { UserModel } from '../user/UserModel';
 import { SimpleErrorResponse } from '../errors/errorFactory';
 import { Stream } from '../viewer-app/interface';
+import { removeTokenFromLocalStore } from '../common/util/util';
 
 export type StreamInfo = {
     streamId: string;
@@ -92,6 +93,10 @@ export const app = createSlice({
         setError: (state, action: PayloadAction<AppError | undefined>) => {
             state.appError = action.payload;
         },
+        logoutUser: (state) => {
+            state.user = undefined;
+            removeTokenFromLocalStore();
+        }
     },
 });
 
@@ -106,6 +111,7 @@ export const getAppStatus = (state: RootState) => state.app.appStatus;
 export const getStreams = (state: RootState) => state.app.streams;
 
 // Action creators are generated for each case reducer function
-export const { setConnectionStatus, setUserInfo, setStreamInfo, setError, setAppStatus, setStreams } =
+export const { setConnectionStatus, setUserInfo, setStreamInfo, setError, setAppStatus, setStreams, logoutUser } =
     app.actions;
+    
 export const logout = createAction('app/logout');

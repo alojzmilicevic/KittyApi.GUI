@@ -1,10 +1,10 @@
-import { EnhancedStore } from '@reduxjs/toolkit';
-import { IceServerConfig } from '../../common/peer-connection/constants';
+import { EnhancedStore } from "@reduxjs/toolkit";
+import { IceServerConfig } from "../../common/peer-connection/constants";
 import {
     onIceConnectionStateChange,
     setLocalVideo,
-} from '../../common/peer-connection/util';
-import { SignalingChannel } from '../../common/signaling/signaling';
+} from "../../common/peer-connection/util";
+import { SignalingChannel } from "../../common/signaling/signaling";
 import {
     AppStatus,
     ConnectionStatus,
@@ -13,9 +13,9 @@ import {
     setAppStatus,
     setConnectionStatus,
     setStreamInfo,
-} from '../../store/app';
-import { AppDispatch } from '../../store/store';
-import * as ViewerService from '../service/viewerService';
+} from "../../store/app";
+import { AppDispatch } from "../../store/store";
+import * as ViewerService from "../service/viewerService";
 
 export class ViewerPeerConnection {
     peer: { from: string; pc: RTCPeerConnection } | null = null;
@@ -37,20 +37,21 @@ export class ViewerPeerConnection {
         setLocalVideo(null);
         this.peer?.pc.close();
         this.peer = null;
-        const s = getStreamInfoSelector(this.store.getState());
 
         try {
-            await ViewerService.leaveStream(s?.streamId!);
-
+            const streamInfo = getStreamInfoSelector(this.store.getState());
+            if(streamInfo) {
+                await ViewerService.leaveStream(streamInfo.streamId);
+            }
         } catch (e) {
             console.error(e);
         } finally {
             this.dispatch(
                 setConnectionStatus({ connectionStatus: ConnectionStatus.IDLE })
             );
-            this.dispatch(setAppStatus(AppStatus.INITIALIZED))
+            this.dispatch(setAppStatus(AppStatus.INITIALIZED));
             this.dispatch(setStreamInfo(undefined));
-            window.location.replace('/');
+            window.location.replace("/");
         }
     };
 
@@ -71,10 +72,10 @@ export class ViewerPeerConnection {
 
         pc.onconnectionstatechange = () => {
             switch (pc.connectionState) {
-                case 'connecting':
+                case "connecting":
                     break;
 
-                case 'connected':
+                case "connected":
                     this.dispatch(
                         setConnectionStatus({
                             connectionStatus: ConnectionStatus.CONNECTED,
@@ -82,9 +83,9 @@ export class ViewerPeerConnection {
                     );
                     break;
 
-                case 'disconnected':
-                case 'failed':
-                case 'closed':
+                case "disconnected":
+                case "failed":
+                case "closed":
                     this.leaveStream();
             }
         };
@@ -97,7 +98,9 @@ export class ViewerPeerConnection {
         const sdp = new RTCSessionDescription(message);
         const pc = this.peer?.pc;
         if (!pc) {
-            console.error('Unable to handle offer, PeerConnection not yet created!');
+            console.error(
+                "Unable to handle offer, PeerConnection not yet created!"
+            );
             return;
         }
 
@@ -113,7 +116,9 @@ export class ViewerPeerConnection {
         if (this.peer?.pc) {
             await this.peer?.pc.addIceCandidate(iceCandidate);
         } else {
-            console.error('Unable to handle ice candidates PeerConnection not yet created!');
+            console.error(
+                "Unable to handle ice candidates PeerConnection not yet created!"
+            );
         }
     }
 }

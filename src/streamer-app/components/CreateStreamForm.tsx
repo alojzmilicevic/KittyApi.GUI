@@ -10,7 +10,7 @@ import { getUser } from "../../store/app";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { Thumbnail } from "../../viewer-app/interface";
 import { StartStreamInput } from "../interface";
-import { getThumbnailData } from "../service/streamerService";
+import StreamerService from "../service/streamerService";
 import { startStream } from "../store/streamerMiddleware";
 
 const StartStreamButton = () => <Button
@@ -56,7 +56,7 @@ const ThumbnailControl = ({ control, thumbnails, getValues }: ThumbnailControlPr
         <Controller
             name='thumbnail'
             control={control}
-            render={({ field: { onChange, value, name } }) => <StyledImageDiv>
+            render={({ field: { onChange, value } }) => <StyledImageDiv>
                 <LabeledSelect label={"Thumbnail"} onChange={onChange} value={value}>
                     {thumbnails.map((thumbnail: Thumbnail, index: number) => <MenuItem key={index} value={index}>{thumbnail.thumbnailName}</MenuItem>)}
                 </LabeledSelect>
@@ -92,7 +92,7 @@ function useCreateStreamForm() {
 
     useEffect(() => {
         const fetchThumbnails = async () => {
-            const thumbnails = await getThumbnailData();
+            const thumbnails = await StreamerService.getThumbnailData();
             setThumbnails(thumbnails);
         }
 
@@ -125,8 +125,6 @@ const CreateStreamForm = () => {
         />
         <StartStreamButton />
     </Box>
-
-
 }
 
 export { CreateStreamForm };
