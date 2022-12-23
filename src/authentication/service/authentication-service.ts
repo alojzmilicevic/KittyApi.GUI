@@ -12,10 +12,10 @@ export type LoginResponse = {
     user: UserModel;
 };
 
-export const login = async (email: string | null, password: string | null): Promise<LoginResponse> =>
+export const login = async (username: string | null, password: string | null): Promise<LoginResponse> =>
     axios
         .post<LoginResponse>(`${appUrl}/auth/login`, {
-            userName: email,
+            username,
             password,
         })
         .then((response: AxiosResponse<LoginResponse>) => response.data)
