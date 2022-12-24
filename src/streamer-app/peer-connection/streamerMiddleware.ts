@@ -13,7 +13,7 @@ import {
 } from '../../store/app';
 import { AppDispatch } from '../../store/store';
 import { StartStreamInput } from '../interface';
-import * as StreamerApi from '../service/streamerService';
+import StreamerService from '../service/streamerService';
 import { StreamerPeerConnection } from './peerCon';
 
 export default class StreamerConnectionHandler {
@@ -57,7 +57,7 @@ export default class StreamerConnectionHandler {
         );
 
         try {
-            const stream = await StreamerApi.startStream(title, thumbnail);
+            const stream = await StreamerService.startStream(title, thumbnail);
             this.dispatch(setStreamInfo(stream));
             this.dispatch(
                 setConnectionStatus({
@@ -81,7 +81,7 @@ export default class StreamerConnectionHandler {
         try {
             const streamId = getStreamInfo(this.store.getState())?.streamId;
             if (streamId) {
-                await StreamerApi.endStream(streamId);
+                await StreamerService.endStream(streamId);
             }
 
         } catch (error) {

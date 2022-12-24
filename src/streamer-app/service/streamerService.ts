@@ -1,38 +1,18 @@
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import { appUrl } from '../../authentication/service/authentication-service';
+import { appAxios } from '../../services/serviceMiddleware';
 import { Thumbnail } from '../../viewer-app/interface';
 
-const streamerApi = axios.create();
-
-streamerApi.interceptors.request.use(
-    (req) => {
-        const token = localStorage.getItem('token');
-
-        const controller = new AbortController();
-        if (!token) {
-            controller.abort();
-        }
-        return {
-            ...req,
-            signal: controller.signal,
-            headers: { authorization: `Bearer ${token}` },
-        };
-    },
-    (error) => {
-        return Promise.reject(error);
-    }
-);
-
-export const getThumbnailData: () => Promise<Thumbnail[]> = () =>
-    streamerApi
+const getThumbnailData: () => Promise<Thumbnail[]> = () =>
+    appAxios
         .get<Thumbnail[]>(`${appUrl}/resources/stream-thumbnails`)
         .then((res: AxiosResponse<Thumbnail[]>) => res.data)
         .catch((e) => {
             throw new Error(e);
         });
 
-export const startStream = (streamTitle: string, thumbnailId: number) =>
-    streamerApi
+const startStream = (streamTitle: string, thumbnailId: number) =>
+    appAxios
         .post(`${appUrl}/stream/start-stream`, {
             streamTitle,
             thumbnailId,
@@ -42,11 +22,17 @@ export const startStream = (streamTitle: string, thumbnailId: number) =>
             throw new Error(e);
         });
 
-export const endStream = (streamId: string) => {
-    return streamerApi
+const endStream = (streamId: string) => {
+    return appAxios
         .post(`${appUrl}/stream/end-stream/${streamId}`)
         .then((res: AxiosResponse) => res.data)
         .catch((e) => {
             throw new Error(e);
         });
+};
+
+export default {
+    getThumbnailData,
+    startStream,
+    endStream,
 };

@@ -5,6 +5,8 @@ import {
 } from '@microsoft/signalr';
 import { UserModel } from '../../user/UserModel';
 import { ClientType, Hubmethod, Hubs, MessageTypes, PartialAnswerMessage, PartialIceCandidateMessage, PartialOfferMessage, Payload } from './constants';
+import { getTokenFromLocalStore } from '../util/util';
+import { AuthenticationResult } from '../../authentication/service/authentication-service';
 
 class SignalingChannel {
     connection: HubConnection | null = null;
@@ -19,11 +21,11 @@ class SignalingChannel {
         this.clientType = clientType;
         this.user = user;
 
-        const token = localStorage.getItem('token');
+        const token: AuthenticationResult = getTokenFromLocalStore();
 
         try {
             this.connection = new HubConnectionBuilder()
-                .withUrl(`${import.meta.env.VITE_SERVER_URL}/chatHub?clientType=${this.clientType}&token=${token}`, {
+                .withUrl(`${import.meta.env.VITE_SERVER_URL}/chatHub?clientType=${this.clientType}&token=${token.accessToken}`, {
                     logger: LogLevel.Error,
                     transport: HttpTransportType.WebSockets | HttpTransportType.LongPolling,
                     withCredentials: false,

@@ -26,16 +26,16 @@ const Login = () => {
             </Typography>
             <Box component='form' onSubmit={handleSubmit(onSubmit)} >
                 <Controller
-                    name='email'
+                    name='username'
                     control={control}
                     defaultValue=''
                     render={({ field }) => <StyledTextField
                         margin='normal'
                         required
                         fullWidth
-                        id='email'
-                        label='Email Address'
-                        autoComplete='email'
+                        id='username'
+                        label='Username'
+                        autoComplete='username'
                         autoFocus
                         {...field} />}
                 />
@@ -51,8 +51,8 @@ const Login = () => {
                         type='password'
                         id='password'
                         autoComplete='current-password'
-                        error={!!errors.email}
-                        helperText={errors.email?.message}
+                        error={!!errors.username}
+                        helperText={errors.username?.message}
                         {...field} />}
                 />
                 <Button
