@@ -1,20 +1,21 @@
-import { styled } from '@mui/material';
-import { Navigate, Outlet, Route, Routes } from 'react-router-dom';
-import { Login } from './authentication/module/LoginForm';
-import { LoadingSpinner } from './components/LoadingSpinner';
-import { ErrorView } from './errors/module/ErrorView';
-import './index.css';
-import { Navigation } from './navigation/module/Navigation';
-import { ProfilePage } from './profile-page/module/ProfilePage';
-import { StreamerApp } from './streamer-app/module/StreamerApp';
-import { useApp } from './useApp';
-import { UserModel } from './user/UserModel';
-import { Streams } from './viewer-app/module/Streams';
-import { Stream } from './viewer-app/stream/module/Stream';
+import "./index.css";
 
-const MainContainer = styled('div')({
-    height: '100%',
-    overflowX: 'hidden',
+import { styled } from "@mui/material";
+import { Navigate, Outlet, Route, Routes } from "react-router-dom";
+
+import { Login } from "./authentication/module/LoginForm";
+import { LoadingSpinner } from "./components/LoadingSpinner";
+import { ErrorView } from "./errors/module/ErrorView";
+import { Navigation } from "./navigation/module/Navigation";
+import { StreamerApp } from "./streamer-app/module/StreamerApp";
+import { useApp } from "./useApp";
+import { UserModel } from "./user/UserModel";
+import { Streams } from "./viewer-app/module/Streams";
+import { Stream } from "./viewer-app/stream/module/Stream";
+
+const MainContainer = styled("div")({
+    height: "100%",
+    overflowX: "hidden",
 });
 
 type ProtectedRouteProps = {
@@ -24,7 +25,7 @@ type ProtectedRouteProps = {
 
 const ProtectedRoute = ({
     user,
-    redirectPath = '/login',
+    redirectPath = "/login",
 }: ProtectedRouteProps) => {
     if (!user) {
         return <Navigate to={redirectPath} replace />;
@@ -32,7 +33,7 @@ const ProtectedRoute = ({
     return <Outlet />;
 };
 
-const RedirectRoute = ({ user, redirectPath = '/' }: ProtectedRouteProps) => {
+const RedirectRoute = ({ user, redirectPath = "/" }: ProtectedRouteProps) => {
     if (user) {
         return <Navigate to={redirectPath} replace />;
     }
@@ -51,15 +52,21 @@ function App() {
                 {ready && !error && (
                     <Routes>
                         <Route element={<ProtectedRoute user={user} />}>
-                            <Route element={<StreamerApp />} path={'/streamer'} />
-                            <Route element={<ProfilePage />} path={'/profile'} />
-                            <Route element={<Streams />} path={'/'}>
-                                <Route element={<Stream />} path={'/:stream'} />
+                            <Route
+                                element={<StreamerApp />}
+                                path={"/streamer"}
+                            />
+                            {/*<Route element={<ProfilePage />} path={'/profile'} /> */}
+                            <Route element={<Streams />} path={"/"}>
+                                <Route element={<Stream />} path={"/:stream"} />
                             </Route>
                         </Route>
                         <Route element={<RedirectRoute user={user} />}>
-                            <Route element={<Login />} path={'/login'} />
-                            <Route element={<Navigate to={'login'} />} path={'*'} />
+                            <Route element={<Login />} path={"/login"} />
+                            <Route
+                                element={<Navigate to={"login"} />}
+                                path={"*"}
+                            />
                         </Route>
                     </Routes>
                 )}

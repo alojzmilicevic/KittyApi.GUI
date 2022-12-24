@@ -1,8 +1,8 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { getTokenFromLocalStore, addTokenToLocalStore } from "../common/util/util";
 import AuthService, { AuthenticationResult } from "../authentication/service/authentication-service";
-export const appAxios = axios.create();
 
+export const appAxios = axios.create();
 
 export const setupAxiosInterceptors = (onAuthenticationFailed: () => void) => {
     const onRequestError = (error: AxiosError) => Promise.reject(error);
